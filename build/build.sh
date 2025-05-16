@@ -126,7 +126,7 @@ if [[ ! -z $(docker images -q vic-yocto-builder-2) ]]; then
 fi
 
 if [[ -z $(docker images -q vic-yocto-builder-3) ]]; then
-	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -g $USER) -t vic-yocto-builder-3 build/
+	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t vic-yocto-builder-3 build/
 else
 	echo "Reusing vic-yocto-builder-3"
 fi
