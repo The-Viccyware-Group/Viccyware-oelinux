@@ -100,7 +100,7 @@ if [[ $BOT_TYPE == "oskr" ]]; then
 elif [[ $BOT_TYPE == "prod" ]]; then
 	echo "Building a prod OTA"
     export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
-	YOCTO_BUILD_COMMAND="clean-prod && build-prod"
+	YOCTO_BUILD_COMMAND="clean-dev && build-dev"
 	BOOT_MAKE_COMMAND="make prodsign"
 else
     echo "Building a dev OTA"
