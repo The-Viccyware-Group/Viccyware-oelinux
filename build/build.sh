@@ -4,8 +4,8 @@ set -e
 
 function usage() {
     echo "$1"
-    echo "Usage: ./build/build.sh -bt <dev/oskr> -s -op <OTA-pw> -bp <boot-passwd> -v <build-increment>"
-    echo "Usage (no signing): ./build/build.sh -bt <dev/oskr> -bp <boot-passwd> -v <build-increment>"
+    echo "Usage: ./build/build.sh -bt <prod/dev/oskr> -s -op <OTA-pw> -bp <boot-passwd> -v <build-increment>"
+    echo "Usage (no signing): ./build/build.sh -bt <prod/dev/oskr> -bp <boot-passwd> -v <build-increment>"
     exit 1
 }
 
@@ -58,7 +58,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [[ "$BOT_TYPE" != "oskr" && "$BOT_TYPE" != "dev" && "$BOT_TYPE" != "prod" ]]; then
-    usage "BOT_TYPE (-bt) should be 'oskr' or 'dev', got: $BOT_TYPE"
+    usage "BOT_TYPE (-bt) should be 'prod' or 'oskr' or 'dev', got: $BOT_TYPE"
 fi
 
 if [[ "$DO_SIGN" == 1 && "$OTA_SIGNING_KEY_PASSWORD" == "" ]]; then
@@ -100,7 +100,7 @@ if [[ $BOT_TYPE == "oskr" ]]; then
 elif [[ $BOT_TYPE == "prod" ]]; then
 	echo "Building a prod OTA"
     export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
-	YOCTO_BUILD_COMMAND="clean-prod && build-prod"
+	YOCTO_BUILD_COMMAND="clean-dev && build-dev"
 	BOOT_MAKE_COMMAND="make prodsign"
 else
     echo "Building a dev OTA"
