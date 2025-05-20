@@ -15,6 +15,8 @@ do_install:append() {
 	install -m 0644 ${UNPACKDIR}/qseecom.rules ${D}/etc/udev/rules.d/qseecom.rules
 	install -m 0644 ${UNPACKDIR}/gpio.rules ${D}/etc/udev/rules.d/gpio.rules
 	install -m 0644 ${UNPACKDIR}/smd23.rules ${D}/etc/udev/rules.d/smd23.rules
+
+	sed -i "s|/usr/lib/systemd/systemd-networkd-wait-online|/usr/lib/systemd/systemd-networkd-wait-online -i wlan0|g" ${D}/usr/lib/systemd/system/systemd-networkd-wait-online.service
 }
 
 FILES:${PN} += "/etc/udev/rules.d"

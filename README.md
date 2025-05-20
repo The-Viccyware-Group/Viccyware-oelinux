@@ -11,7 +11,7 @@ The main repo for building Viccyware otas.
 
 ## Update notes:
 
-- **05-20-2025**: you might want to run `./build/clean.sh "connman wpa-supplicant base-files"`
+- **05-20-2025**: you might want to run `./build/clean.sh "connman wpa-supplicant base-files systemd tzdata"` before building again
 
 ## Build
 

@@ -181,6 +181,18 @@ case "$1" in
     # Always create userdata
     make_userdata
     mount --rbind /data /usr/qtiroot/data
+
+    # Set up our strange time zone solution
+    mkdir -p /data/etc
+
+    if [[ ! -f /data/etc/localtime ]]; then
+	cp /usr/share/zoneinfo/America/Chicago /data/etc/localtime
+    fi
+    if [[ ! -f /data/etc/timezone ]]; then
+	echo "America/Chicago" > /data/etc/timezone
+    fi
+    mount --bind /data/etc/localtime /etc/localtime
+    mount --bind /data/etc/timezone  /etc/timezone
     ;;
 
   stop )

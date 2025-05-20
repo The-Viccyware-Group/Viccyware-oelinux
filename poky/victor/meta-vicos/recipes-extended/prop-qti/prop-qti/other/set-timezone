@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if ! timedatectl list-timezones | grep -qx "$1"; then
+  echo "Timezone not found."
+  exit 1
+fi
+
+mkdir -p /data/etc
+cp "/usr/share/zoneinfo/$1" /data/etc/localtime
+echo "$1" > /data/etc/timezone
+mount --bind /data/etc/localtime /etc/localtime
+mount --bind /data/etc/timezone  /etc/timezone
+
+exit 0

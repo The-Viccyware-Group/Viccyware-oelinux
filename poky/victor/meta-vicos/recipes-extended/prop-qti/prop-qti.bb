@@ -23,6 +23,7 @@ do_install () {
 	install -d ${D}/data/misc/camera
 	install -d ${D}/data/misc/bluetooth
 	cp -r ${S}/other/export-gpio ${D}/usr/sbin/export-gpio
+	cp -r ${S}/other/set-timezone ${D}/usr/sbin/set-timezone
 	cp -r ${S}/initscripts/* ${D}/etc/initscripts/
 	chmod 0777 ${D}/etc/initscripts/*
 	cp -r ${S}/qtiroot ${D}/usr/qtiroot
@@ -54,7 +55,8 @@ FILES:${PN} = "/usr/qtiroot \
 		/etc/initscripts \
 		/data/misc/camera \
 		/data/misc/bluetooth \
-		/usr/sbin/export-gpio"
+		/usr/sbin/export-gpio \
+		/usr/sbin/set-timezone"
 
 # yocto doesn't really allow precompiled binaries
 INSANE_SKIP:${PN} = "file-rdeps"
