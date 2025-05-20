@@ -16,7 +16,7 @@ do_compile() {
 do_install() {
    mkdir -p ${D}/usr/sbin
    cp ${S}/fake-hwclock ${D}/usr/sbin/
-   chmod 0755 ${D}/sbin/fake-hwclock
+   chmod 0755 ${D}/usr/sbin/fake-hwclock
    if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
       install -d ${SYSTEM_DIR}/
       install -d ${SYSTEM_DIR}/multi-user.target.wants/
@@ -36,5 +36,5 @@ do_install() {
   fi
 }
 
-FILES:${PN} += "/usr/sbin"
+FILES:${PN} += "usr/sbin"
 FILES:${PN} += " ${systemd_unitdir}/system/"

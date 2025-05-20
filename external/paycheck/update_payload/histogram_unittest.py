@@ -1,18 +1,35 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
-# Copyright (c) 2013 The Chromium OS Authors. All rights reserved.
-# Use of this source code is governed by a BSD-style license that can be
-# found in the LICENSE file.
+# Copyright (C) 2013 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """Unit tests for histogram.py."""
 
+# Disable check for function names to avoid errors based on old code
+# pylint: disable-msg=invalid-name
+
+from __future__ import absolute_import
+
 import unittest
 
-import format_utils
-import histogram
+from update_payload import format_utils
+from update_payload import histogram
 
 
 class HistogramTest(unittest.TestCase):
+  """ Tests histogram"""
 
   @staticmethod
   def AddHumanReadableSize(size):

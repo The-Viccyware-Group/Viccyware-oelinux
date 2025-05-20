@@ -1,8 +1,22 @@
-# Copyright (c) 2013 The Chromium OS Authors. All rights reserved.
-# Use of this source code is governed by a BSD-style license that can be
-# found in the LICENSE file.
+#
+# Copyright (C) 2013 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """Various formatting functions."""
+
+from __future__ import division
 
 
 def NumToPercent(num, total, min_precision=1, max_precision=5):
@@ -38,7 +52,7 @@ def NumToPercent(num, total, min_precision=1, max_precision=5):
   precision = min(min_precision, max_precision)
   factor = 10 ** precision
   while precision <= max_precision:
-    percent = num * 100 * factor / total
+    percent = num * 100 * factor // total
     if percent:
       break
     factor *= 10
@@ -90,8 +104,8 @@ def BytesToHumanReadable(size, precision=1, decimal=False):
     magnitude = next_magnitude
 
   if exp != 0:
-    whole = size / magnitude
-    frac = (size % magnitude) * (10 ** precision) / magnitude
+    whole = size // magnitude
+    frac = (size % magnitude) * (10 ** precision) // magnitude
     while frac and not frac % 10:
       frac /= 10
     return '%d%s %s' % (whole, '.%d' % frac if frac else '', suffixes[exp - 1])

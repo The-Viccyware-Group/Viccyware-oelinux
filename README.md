@@ -9,12 +9,30 @@ The main repo for building Viccyware otas.
 - /anki/victor -> [Viccyware](https://github.com/Switch-modder/Viccyware) (Viccyware-tester)
 - /anki/wired -> [wired](https://github.com/os-vector/wired) (main)
 
+## Update notes:
+
+- **05-20-2025**: you might want to run `./build/clean.sh "connman wpa-supplicant base-files"`
+
 ## Build
 
-Make sure you have Docker installed, and configured so a regular user can use it.
+- Note: you will need a somewhat beefy **x86_64 Linux** machine with at least 16GB of RAM and 100GB of free space.
+
+1. [Install Docker](https://docs.docker.com/engine/install/), git, and wget.
+
+2. Configure it so a regular user can use it:
 
 ```
-git clone https://github.com/The-Viccyware-Group/Viccyware-oelinux/ --recurse-submodules --shallow-submodules --depth=1
+sudo groupadd docker
+sudo gpasswd -a $USER docker
+newgrp docker
+sudo chown root:docker /var/run/docker.sock
+sudo chmod 660 /var/run/docker.sock
+```
+
+3. Clone and build:
+
+```
+git clone https://github.com/The-Viccyware-Group/Viccyware-oelinux/ --recurse-submodules
 cd Viccyware-oelinux
 ./build/build.sh -bt <dev/oskr> -bp <boot-passwd> -v <build-increment>
 # boot password not required for dev
@@ -50,6 +68,7 @@ cd Viccyware-oelinux
 
 - delta updates
 - iptables
+- r/o rootfs (due to time zone setting. Anki's /data/etc/localtime patch didn't work)
 
 ## Viccyware was made possible though the work of some amazing community members
 

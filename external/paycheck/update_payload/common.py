@@ -1,33 +1,51 @@
-# Copyright (c) 2013 The Chromium OS Authors. All rights reserved.
-# Use of this source code is governed by a BSD-style license that can be
-# found in the LICENSE file.
+#
+# Copyright (C) 2013 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 """Utilities for update payload processing."""
 
+from __future__ import absolute_import
 from __future__ import print_function
 
-from error import PayloadError
+import base64
+
 import update_metadata_pb2
+from update_payload.error import PayloadError
 
 
 #
 # Constants.
 #
-PSEUDO_EXTENT_MARKER = (1L << 64) - 1  # UINT64_MAX
-
 SIG_ASN1_HEADER = (
-    '\x30\x31\x30\x0d\x06\x09\x60\x86'
-    '\x48\x01\x65\x03\x04\x02\x01\x05'
-    '\x00\x04\x20'
+    b'\x30\x31\x30\x0d\x06\x09\x60\x86'
+    b'\x48\x01\x65\x03\x04\x02\x01\x05'
+    b'\x00\x04\x20'
 )
 
-CHROMEOS_MAJOR_PAYLOAD_VERSION = 1
 BRILLO_MAJOR_PAYLOAD_VERSION = 2
 
-INPLACE_MINOR_PAYLOAD_VERSION = 1
 SOURCE_MINOR_PAYLOAD_VERSION = 2
 OPSRCHASH_MINOR_PAYLOAD_VERSION = 3
-IMGDIFF_MINOR_PAYLOAD_VERSION = 4
+BROTLI_BSDIFF_MINOR_PAYLOAD_VERSION = 4
+PUFFDIFF_MINOR_PAYLOAD_VERSION = 5
+
+KERNEL = 'kernel'
+ROOTFS = 'root'
+# Tuple of (name in system, name in protobuf).
+CROS_PARTITIONS = ((KERNEL, KERNEL), (ROOTFS, 'rootfs'))
+
 
 #
 # Payload operation types.
@@ -35,30 +53,29 @@ IMGDIFF_MINOR_PAYLOAD_VERSION = 4
 class OpType(object):
   """Container for operation type constants."""
   _CLASS = update_metadata_pb2.InstallOperation
-  # pylint: disable=E1101
   REPLACE = _CLASS.REPLACE
   REPLACE_BZ = _CLASS.REPLACE_BZ
-  MOVE = _CLASS.MOVE
-  BSDIFF = _CLASS.BSDIFF
   SOURCE_COPY = _CLASS.SOURCE_COPY
   SOURCE_BSDIFF = _CLASS.SOURCE_BSDIFF
   ZERO = _CLASS.ZERO
   DISCARD = _CLASS.DISCARD
   REPLACE_XZ = _CLASS.REPLACE_XZ
-  IMGDIFF = _CLASS.IMGDIFF
-  ALL = (REPLACE, REPLACE_BZ, MOVE, BSDIFF, SOURCE_COPY, SOURCE_BSDIFF, ZERO,
-         DISCARD, REPLACE_XZ, IMGDIFF)
+  PUFFDIFF = _CLASS.PUFFDIFF
+  BROTLI_BSDIFF = _CLASS.BROTLI_BSDIFF
+  ZUCCHINI = _CLASS.ZUCCHINI
+  ALL = (REPLACE, REPLACE_BZ, SOURCE_COPY, SOURCE_BSDIFF, ZERO,
+         DISCARD, REPLACE_XZ, PUFFDIFF, BROTLI_BSDIFF, ZUCCHINI)
   NAMES = {
       REPLACE: 'REPLACE',
       REPLACE_BZ: 'REPLACE_BZ',
-      MOVE: 'MOVE',
-      BSDIFF: 'BSDIFF',
       SOURCE_COPY: 'SOURCE_COPY',
       SOURCE_BSDIFF: 'SOURCE_BSDIFF',
       ZERO: 'ZERO',
       DISCARD: 'DISCARD',
       REPLACE_XZ: 'REPLACE_XZ',
-      IMGDIFF: 'IMGDIFF',
+      PUFFDIFF: 'PUFFDIFF',
+      BROTLI_BSDIFF: 'BROTLI_BSDIFF',
+      ZUCCHINI: 'ZUCCHINI',
   }
 
   def __init__(self):
@@ -127,7 +144,7 @@ def Read(file_obj, length, offset=None, hasher=None):
 
   try:
     data = file_obj.read(length)
-  except IOError, e:
+  except IOError as e:
     raise PayloadError('error reading from file (%s): %s' % (file_obj.name, e))
 
   if len(data) != length:
@@ -148,13 +165,12 @@ def FormatExtent(ex, block_size=0):
   end_block = ex.start_block + ex.num_blocks
   if block_size:
     return '%d->%d * %d' % (ex.start_block, end_block, block_size)
-  else:
-    return '%d->%d' % (ex.start_block, end_block)
+  return '%d->%d' % (ex.start_block, end_block)
 
 
 def FormatSha256(digest):
   """Returns a canonical string representation of a SHA256 digest."""
-  return digest.encode('base64').strip()
+  return base64.b64encode(digest).decode('utf-8')
 
 
 #

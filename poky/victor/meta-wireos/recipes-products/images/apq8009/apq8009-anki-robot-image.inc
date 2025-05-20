@@ -38,16 +38,22 @@ IMAGE_INSTALL += "${@oe.utils.conditional('USER_BUILD', '1', '', 'neofetch', d)}
 
 #
 # Other stuff
-# IMAGE_INSTALL += "bspatch"
-# IMAGE_INSTALL += "fake-hwclock"
-# IMAGE_INSTALL += "rebooter"
-# IMAGE_INSTALL += "rng-tools"
+IMAGE_INSTALL += "bspatch"
+IMAGE_INSTALL += "fake-hwclock"
+IMAGE_INSTALL += "rebooter"
+IMAGE_INSTALL += "update-os"
 IMAGE_INSTALL += "anki-update-engine"
-# IMAGE_INSTALL += "alsa-utils"
-# IMAGE_INSTALL += "lvm2"
-# IMAGE_INSTALL += "cryptsetup"
-# IMAGE_INSTALL += "user-data-locker"
 IMAGE_INSTALL += "fault-code"
+
+IMAGE_INSTALL += "python3-netclient"
+IMAGE_INSTALL += "python3-compression"
+IMAGE_INSTALL += "python3-shell"
+IMAGE_INSTALL += "python3-crypt"
+IMAGE_INSTALL += "python3-pkgutil"
+IMAGE_INSTALL += "python3-numbers"
+IMAGE_INSTALL += "python3-six"
+IMAGE_INSTALL += "python3-protobuf"
+IMAGE_INSTALL += "paycheck"
 
 # IMAGE_INSTALL += "lib-robotics-camera"
 # IMAGE_INSTALL += "lib-robotics-camera-dev"

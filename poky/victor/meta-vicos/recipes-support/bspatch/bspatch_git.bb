@@ -1,7 +1,7 @@
 DESCRIPTION = "bspatch tool from Android needed for delta updates"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/\
-BSD;md5=550794465ba0ec5312d6919e203a55f9"
+BSD-3-Clause;md5=550794465ba0ec5312d6919e203a55f9"
 
 DEPENDS = "bzip2"
 
@@ -21,3 +21,4 @@ do_install() {
 }
 
 FILES:${PN} += "usr/bin/bspatch"
+INSANE_SKIP:${PN} += "ldflags"

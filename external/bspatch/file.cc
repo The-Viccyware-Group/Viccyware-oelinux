@@ -22,6 +22,9 @@
 
 #include <algorithm>
 
+#include <limits>
+
+
 namespace bsdiff {
 
 std::unique_ptr<File> File::FOpen(const char* pathname, int flags) {

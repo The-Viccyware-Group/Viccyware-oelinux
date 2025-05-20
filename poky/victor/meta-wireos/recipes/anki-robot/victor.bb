@@ -237,9 +237,6 @@ do_compile[nostamp] = "1"
 
 do_install () {
   run_victor ${S}/project/victor/scripts/install.sh ${BUILDSRC} ${D}
-  cp -a ${S}/patch-libs/* ${D}/anki/lib/
-  cp -a ${S}/patch-libs/libunwind.so.0 ${D}/anki/lib/libunwind.so.1
-  chmod +rwx ${D}/anki/lib/*
 }
 
 do_generate_victor_canned_fs_config () {
