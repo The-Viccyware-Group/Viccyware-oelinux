@@ -9,6 +9,3 @@
 [submodule "anki/victor"]
 	path = anki/victor
 	url = https://github.com/Switch-modder/Viccyware
-[submodule "anki/wired"]
-	path = anki/wired
-	url = https://github.com/The-Viccyware-Group/wired-viccyware
