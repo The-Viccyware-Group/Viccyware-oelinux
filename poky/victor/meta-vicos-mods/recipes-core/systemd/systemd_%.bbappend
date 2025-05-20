@@ -1,9 +1,9 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
 SRC_URI += "file://ion.rules \
-	   	    file://qseecom.rules \
-			file://gpio.rules \
-			file://smd23.rules"
+	    file://qseecom.rules \
+	    file://gpio.rules \
+	    file://smd23.rules"
 
 do_install:append() {
 	# we don't need any v4l stuff (it causes udev to never settle)
