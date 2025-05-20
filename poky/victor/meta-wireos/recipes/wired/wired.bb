@@ -111,15 +111,12 @@ do_compile() {
 
 do_install () {
     install -d ${D}/usr/bin
-    install -d ${D}/usr/lib
     install -d ${D}/etc/wired
     install -p -m 0755 ${WORKSPACE}/anki/wired/build/wired ${D}/usr/bin/
-    install -m 0755 ${WORKSPACE}/anki/wired/build/libvector-gobot.so ${D}/usr/lib/libvector-gobot.so
     cp -R --no-dereference --preserve=mode,links -v ${WORKSPACE}/anki/wired/webroot ${D}/etc/wired/webroot
 }
 
 FILES:${PN} += "usr/bin/wired"
-FILES:${PN} += "/usr/lib/libvector-gobot.so"
 FILES:${PN} += "etc/wired/webroot"
 
 FILES:${PN}-dev = ""
