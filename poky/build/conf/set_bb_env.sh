@@ -211,7 +211,7 @@ function clean-oskr() {
   export VARIANT=perf
   export PRODUCT=robot
   export OSKR=1
-  cdbitbake -c cleanall victor vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf
+  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine
 }
 
 function clean-dev() {
