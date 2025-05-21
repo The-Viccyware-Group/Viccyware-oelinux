@@ -31,7 +31,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        clean: true
+        clean: false
         ref: ${{ steps.get-ref.outputs.ref }}
         submodules: recursive
         fetch-depth: 0
@@ -59,8 +59,8 @@ jobs:
         export DOCKER_LOG=debug
         
         # Run the modified build script
-        ./build/build_ci.sh -bt dev -v 0
-        ./build/build_ci.sh -bt oskr -bp annul-burl-zq-flew-hack-owe-phil-triton-pk -v 0
+        ./build/build_ci.sh -bt dev -v 1
+        ./build/build_ci.sh -bt oskr -bp annul-burl-zq-flew-hack-owe-phil-triton-pk -v 1
     
     - name: Upload otas
       uses: actions/upload-artifact@v4
