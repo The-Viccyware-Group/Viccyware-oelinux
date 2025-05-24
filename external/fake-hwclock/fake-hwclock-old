@@ -1,0 +1,101 @@
+#!/bin/sh
+
+# Establish an epoch time for Victor.  Our clock should never be set to a value before this.
+EPOCH="2018-05-10 12:34:56"
+SAVEDTIME="${EPOCH}"
+
+# Try to use the timestamp file to update the SAVEDTIME
+TIMESTAMP="/etc/timestamp"
+if [ -f "${TIMESTAMP}" ]; then
+    ETIME=$(date -u -D '%Y%m%d%H%M%S' -d `cat ${TIMESTAMP}` +'%Y-%m-%d %H:%M:%S')
+
+    if expr "${ETIME}" \> "${SAVEDTIME}" > /dev/null ; then
+	SAVEDTIME=${ETIME}
+    fi
+fi
+
+# Get the Current UTC Time
+CTIME=$(date -u +'%Y-%m-%d %H:%M:%S')
+# Get the current value in seconds for the hardware clock
+HWCLOCK=$(date -u -D '%a %b %d %T %Y' -d "`hwclock`" +'%s')
+FHWCLOCK=${HWCLOCK}
+
+# If we have a saved time and hardware clock value, load them
+CLOCKFILE="/data/opt/fake-hwclock/fake-hwclock.data"
+if [ -f "${CLOCKFILE}" ]; then
+    FTIME=$(grep TIME "${CLOCKFILE}" | awk -F= '{print $2;}')
+    FHWCLOCK=$(grep HWCLOCK "${CLOCKFILE}" | awk -F= '{print $2;}')
+
+    if expr "${FTIME}" \> "${SAVEDTIME}" > /dev/null ; then
+	SAVEDTIME=${FTIME}
+    fi
+fi
+
+
+# if the file time is in the future, use that
+setclock() {
+    CLOCK_OFFSET=0
+    if [ -f "${CLOCKFILE}" ]; then
+	# Only add in hwclock seconds if we have a saved fake-hwclock.data file
+	# Otherwise, we don't want to add a potentially large number of seconds
+	# to the saved time from the OS build timestamp.  Could cause us to
+	# set the clock forward of the true wall clock time if the robot hasn't
+	# been power cycled in a long time.
+	CLOCK_OFFSET=${HWCLOCK}
+	if expr "${HWCLOCK}" \> "${FHWCLOCK}" > /dev/null ; then
+	    # If the RTC clock has continued to advance since our last boot
+	    # then only use the difference here
+	    CLOCK_OFFSET=$(expr "${HWCLOCK}" - "${FHWCLOCK}")
+	fi
+	SAVEDTIME_SECS=$(date -u -D '%Y-%m-%d %H:%M:%S' -d "${SAVEDTIME}" +'%s')
+	SAVEDTIME_SECS=$(expr "${SAVEDTIME_SECS}" + "${CLOCK_OFFSET}")
+	SAVEDTIME=$(date -u -D '%s' -d "${SAVEDTIME_SECS}" +'%Y-%m-%d %H:%M:%S')
+    fi
+
+    if expr "${SAVEDTIME}" \> "${CTIME}" > /dev/null ; then
+	echo -e "loading saved time ${SAVEDTIME} over ${CTIME}\nClock Offset = ${CLOCK_OFFSET} seconds"
+	date -u --set="${SAVEDTIME}"
+    else
+	echo "ignoring saved time ${SAVEDTIME} over ${CTIME}"
+    fi
+}
+
+
+# if current time is greater than what is in the file, save it
+saveclock() {
+	if expr "${CTIME}" \> "${SAVEDTIME}" > /dev/null ; then
+		mkdir -p `dirname "${CLOCKFILE}"`
+		echo "saving time ${CTIME} over ${SAVEDTIME}"
+		echo "TIME=${CTIME}" > "${CLOCKFILE}.tmp"
+		echo "HWCLOCK=${HWCLOCK}" >> "${CLOCKFILE}.tmp"
+		mv "${CLOCKFILE}.tmp" "${CLOCKFILE}"
+	else
+		echo "not saving time ${CTIME} over ${SAVEDTIME}"
+	fi
+}
+
+
+# The format expected is "<CMD>\n"
+# Read line from stdin with 1 second timeout.
+# If run from systemd the FIFO socket will be read
+CMD=$1
+if [ -z $CMD ] || [ "$CMD" = "stdin" ]
+then
+    read -r -t 1 CMD
+fi
+
+case "$CMD" in
+	load)
+		setclock
+		;;
+	save)
+		saveclock
+		;;
+	tick)
+		saveclock
+		;;
+	*)
+		echo "Usage: $0 {load|save|tick}"
+		exit 1
+		;;
+esac

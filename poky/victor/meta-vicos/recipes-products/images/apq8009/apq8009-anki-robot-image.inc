@@ -13,6 +13,9 @@ IMAGE_INSTALL += "libsndfile1"
 IMAGE_INSTALL += "lvm2"
 IMAGE_INSTALL += "chrony"
 
+IMAGE_INSTALL += "iptables-persistent"
+IMAGE_INSTALL += "ip6tables-persistent"
+
 #IMAGE_INSTALL += "rng-tools"
 
 IMAGE_INSTALL += "alsa-utils"

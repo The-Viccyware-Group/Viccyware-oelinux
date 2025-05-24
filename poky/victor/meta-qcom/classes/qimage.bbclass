@@ -48,7 +48,6 @@ def get_bblayer_img_inc(layerkey, d):
         img_inc_path = machine_inc_path
     else:
         img_inc_path = common_inc_path
-    bb.note(" Incuding packages from %s" % (img_inc_path))
     return img_inc_path
 
 IMAGE_INSTALL_ATTEMPTONLY ?= ""
