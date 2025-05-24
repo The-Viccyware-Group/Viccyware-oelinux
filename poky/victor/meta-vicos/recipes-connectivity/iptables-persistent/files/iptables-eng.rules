@@ -31,6 +31,9 @@
 # Allow ping
 -A INPUT -p icmp -m icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT
 
+# Allow wired
+-A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
+
 # dev-only
 
 # ssh

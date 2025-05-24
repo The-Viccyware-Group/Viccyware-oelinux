@@ -26,7 +26,10 @@ IMAGE_INITSCRIPTS ?= ""
 
 IMAGE_PREPROCESS_COMMAND:prepend = " gen_buildprop;"
 EXTRA_IMAGE_FEATURES += "read-only-rootfs"
-gen_buildprop() {
+
+TARGET_NUM = "${@('0' if d.getVar('DEV') == '1' else '1' if d.getVar('OSKR') == '1' else '9' if d.getVar('USER_BUILD') == '1' else '0')}"
+
+gen_buildprop:append() {
    mkdir -p ${IMAGE_ROOTFS}/cache
    BUILD_TIMESTAMP=`cat ${IMAGE_ROOTFS}/etc/version`
    echo ro.build.version.release=${BUILD_TIMESTAMP} >> ${IMAGE_ROOTFS}/build.prop
@@ -38,7 +41,7 @@ gen_buildprop() {
    RELEASE_VERSION=`cat ${IMAGE_ROOTFS}/etc/version`
    
    # read from /anki/etc/version to prepend build.id
-   VICTOR_BUILD_VERSION=`cat ${IMAGE_ROOTFS}/anki/etc/version`
+   VICTOR_BUILD_VERSION="${OS_VERSION}"
    VICTOR_BUILD_REV=`cat ${IMAGE_ROOTFS}/anki/etc/revision`
    VICTOR_REV_TAG=""
    if [ ! -z "${VICTOR_BUILD_REV}" ]; then
@@ -98,5 +101,5 @@ gen_buildprop() {
    VERSION_CODE=`cat ${IMAGE_ROOTFS}/etc/os-version-code`
    echo "ro.build.version.incremental=${VERSION_CODE}" >> ${IMAGE_ROOTFS}/build.prop
 
-   echo "ro.build.user=${USER}" >> ${IMAGE_ROOTFS}/build.prop
+   echo "ro.build.target=${TARGET_NUM}" >> ${IMAGE_ROOTFS}/build.prop
 }
