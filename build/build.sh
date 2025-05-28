@@ -2,10 +2,18 @@
 
 set -e
 
+# Hidden arguments;
+# 1. -au: enable auto-updates
+
+# Hidden env vars:
+# 1. I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE: set to 1 if you want to inhibit the -au interaction
+
+CREATOR="Wire"
+
 function usage() {
     echo "$1"
-    echo "Usage: ./build/build.sh -bt <prod/dev/oskr> -s -op <OTA-pw> -bp <boot-passwd> -v <build-increment>"
-    echo "Usage (no signing): ./build/build.sh -bt <prod/dev/oskr> -bp <boot-passwd> -v <build-increment>"
+    echo "Usage: ./build/build.sh -bt <dev/oskr/devcloudless> -s -op <OTA-pw> -bp <boot-passwd> -v <build-increment>"
+    echo "Usage (no signing): ./build/build.sh -bt <dev/oskr/devcloudless> -bp <boot-passwd> -v <build-increment>"
     exit 1
 }
 
@@ -43,6 +51,18 @@ function check_sign_ota() {
 	fi
 }
 
+function are_you_wire() {
+	if [[ "${I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE}" != "1" ]]; then
+		echo "Are you $CREATOR?"
+		read -p "(y/n): " yn
+		case $yn in
+			[Yy]* ) echo "Cool." ;;
+			[Nn]* ) echo; echo "Then don't use the -au argument!"; exit 1;;
+			* ) echo "that is not a y or an n."; exit 1;;
+		esac
+	fi
+}
+
 while [ $# -gt 0 ]; do
     case "$1" in
         -bt) BOT_TYPE="$2"; shift ;;
@@ -50,6 +70,7 @@ while [ $# -gt 0 ]; do
         -bp) BOOT_PASSWORD="$2"; shift ;;
         -s) DO_SIGN=1 ;;
         -v) BUILD_INCREMENT="$2"; shift ;;
+        -au) are_you_wire; AUTO_UPDATE=1 ;;
         *)
             usage "unknown option: $1"
             exit 1 ;;
@@ -57,8 +78,8 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-if [[ "$BOT_TYPE" != "oskr" && "$BOT_TYPE" != "dev" && "$BOT_TYPE" != "prod" ]]; then
-    usage "BOT_TYPE (-bt) should be 'prod' or 'oskr' or 'dev', got: $BOT_TYPE"
+if [[ "$BOT_TYPE" != "oskr" && "$BOT_TYPE" != "dev" && "$BOT_TYPE" != "prod" && "$BOT_TYPE" != "devcloudless" ]]; then
+    usage "BOT_TYPE (-bt) should be 'oskr' or 'dev', got: $BOT_TYPE"
 fi
 
 if [[ "$DO_SIGN" == 1 && "$OTA_SIGNING_KEY_PASSWORD" == "" ]]; then
@@ -94,16 +115,20 @@ DIRPATH="$(pwd)"
 
 if [[ $BOT_TYPE == "oskr" ]]; then
 	echo "Building an OSKR OTA"
-    export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
+        export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
 	YOCTO_BUILD_COMMAND="clean-oskr && build-oskr"
 	BOOT_MAKE_COMMAND="make oskrsign"
 elif [[ $BOT_TYPE == "prod" ]]; then
 	echo "Building a prod OTA"
-    export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
-	YOCTO_BUILD_COMMAND="clean-dev && build-dev"
+        export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
+	YOCTO_BUILD_COMMAND="clean-prod && build-prod"
 	BOOT_MAKE_COMMAND="make prodsign"
+elif [[ $BOT_TYPE == "devcloudless" ]]; then
+        echo "Building a dev cloudless OTA"
+        YOCTO_BUILD_COMMAND="clean-dev-cloudless && build-dev-cloudless"
+        BOOT_MAKE_COMMAND="make devsign"
 else
-    echo "Building a dev OTA"
+        echo "Building a dev OTA"
 	YOCTO_BUILD_COMMAND="clean-dev && build-dev"
 	BOOT_MAKE_COMMAND="make devsign"
 fi
@@ -125,19 +150,20 @@ if [[ ! -z $(docker images -q vic-yocto-builder-2) ]]; then
 	sleep 5
 fi
 
-if [[ -z $(docker images -q vic-yocto-builder-3) ]]; then
-	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t vic-yocto-builder-3 build/
+if [[ -z $(docker images -q vic-yocto-builder-4) ]]; then
+	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t vic-yocto-builder-4 build/
 else
-	echo "Reusing vic-yocto-builder-3"
+	echo "Reusing vic-yocto-builder-4"
 fi
 docker run -it \
     -v $(pwd)/anki-deps:/home/$USER/.anki \
     -v $(pwd):$(pwd) \
     -v $(pwd)/build/cache:/home/$USER/.ccache \
-    vic-yocto-builder-3 bash -c \
+    vic-yocto-builder-4 bash -c \
     "cd $(pwd)/poky && \
     source build/conf/set_bb_env.sh && \
     export ANKI_BUILD_VERSION=$BUILD_INCREMENT && \
+    export AUTO_UPDATE=${AUTO_UPDATE} && \
     ${YOCTO_BUILD_COMMAND} && \
     cd ${DIRPATH}/ota && \
     rm -rf ../_build/*.img ../_build/*.stats ../_build/*.ini ../_build/*.enc && \

@@ -1,0 +1,1 @@
+cloud ALL = (root, root) NOPASSWD: /usr/sbin/setfreq *

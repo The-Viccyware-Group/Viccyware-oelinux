@@ -63,6 +63,7 @@ RUN tar -xvf upx-5.0.0-amd64_linux.tar.xz
 RUN mv upx-5.0.0-amd64_linux/upx /usr/bin/
 RUN chmod 0755 /usr/bin/upx
 
+RUN apt install -y cmake automake libtool
 
 USER ${USER_NAME}
 WORKDIR ${DIR_PATH}

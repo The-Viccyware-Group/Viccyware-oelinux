@@ -58,19 +58,14 @@ cd Viccyware-oelinux
         -   He will somewhat randomly do loosepixel and binaryeyes
     -   Better camera gamma correction
         -   He handles too-bright situations much better now
--   Snowboy wakeword engine
-    -   Custom wake words!
+-   Picovoice wakeword engine
+    -   Custom wake words in :8080 webserver!
 -   `htop` and `rsync` are embedded
 -   Python 3.13 rather than Python 2
+-   Global SSH key: ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
 -   Fixed fault code handler
     - No more 980 or 981 after crash on Vector 2.0
 -   Global SSH key ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
-
-## What isn't there yet
-
-- delta updates
-- iptables
-- r/o rootfs (due to time zone setting. Anki's /data/etc/localtime patch didn't work)
 
 ## Viccyware was made possible though the work of some amazing community members
 

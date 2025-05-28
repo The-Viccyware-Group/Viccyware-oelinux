@@ -98,6 +98,16 @@ function build-8009-robot-perf-image() {
   cdbitbake machine-robot-image
 }
 
+function build-8009-robot-perf-cloudless-image() {
+  unset_bb_env
+  export MACHINE=apq8009-robot
+  export DISTRO=msm-perf
+  export VARIANT=perf
+  export PRODUCT=robot
+  export CLOUDLESS=1
+  cdbitbake machine-robot-image
+}
+
 function build-8009-robot-oskr-image() {
   unset_bb_env
   export MACHINE=apq8009-robot
@@ -200,6 +210,10 @@ function build-dev() {
   build-victor-robot-perf-image
 }
 
+function build-dev-cloudless() {
+  build-8009-robot-perf-cloudless-image
+}
+
 function build-prod() {
   build-victor-robot-user-image
 }
@@ -211,7 +225,7 @@ function clean-oskr() {
   export VARIANT=perf
   export PRODUCT=robot
   export OSKR=1
-  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine
+  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine update-engine
 }
 
 function clean-dev() {
@@ -220,7 +234,17 @@ function clean-dev() {
   export DISTRO=msm-perf
   export VARIANT=perf
   export PRODUCT=robot
-  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine
+  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine update-engine
+}
+
+function clean-dev-cloudless() {
+  unset_bb_env
+  export MACHINE=apq8009-robot
+  export DISTRO=msm-perf
+  export VARIANT=perf
+  export PRODUCT=robot
+  export CLOUDLESS=1
+  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine update-engine vic-cloudless
 }
 
 function clean-prod() {
@@ -283,7 +307,7 @@ rebake() {
 }
 
 unset_bb_env() {
-  unset DISTRO MACHINE PRODUCT VARIANT FACTORY DEV OSKR BETA ANKI_AMAZON_ENDPOINTS_ENABLED
+  unset DISTRO MACHINE PRODUCT VARIANT FACTORY DEV OSKR BETA ANKI_AMAZON_ENDPOINTS_ENABLED CLOUDLESS
 }
 
 # Find build templates from qti meta layer.
@@ -299,6 +323,6 @@ export TEMPLATECONF="${WS}/poky/victor/meta-qcom/conf/templates/msm"
 # (BBLAYERS is explicitly blocked from this within OE-Core itself, though...)
 # oe-init-build-env calls oe-buildenv-internal which sets
 # BB_ENV_EXTRAWHITE, append our vars to the list
-export BB_ENV_PASSTHROUGH_ADDITIONS="${BB_ENV_PASSTHROUGH_ADDITIONS} DL_DIR PRODUCT VARIANT FACTORY DEV OSKR QSN BETA ANKI_AMAZON_ENDPOINTS_ENABLED ANKI_BUILD_VERSION"
+export BB_ENV_PASSTHROUGH_ADDITIONS="${BB_ENV_PASSTHROUGH_ADDITIONS} DL_DIR PRODUCT VARIANT FACTORY DEV OSKR QSN BETA ANKI_AMAZON_ENDPOINTS_ENABLED ANKI_BUILD_VERSION AUTO_UPDATE CLOUDLESS"
 
 list-build-commands

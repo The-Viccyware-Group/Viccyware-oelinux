@@ -34,6 +34,7 @@ do_install() {
   install -m 0755 ${S}/sysswitch ${D}/usr/bin/sysswitch
 
   install -d ${D}${sysconfdir}/initscripts
+  [ "${AUTO_UPDATE}" != "1" ] && touch ${D}${sysconfdir}/do-not-auto-update
   install -m 0755 ${S}/boot-successful.sh ${D}${sysconfdir}/initscripts/boot-successful
   install -d ${D}${sysconfdir}/systemd/system/
   install -m 0644 ${S}/boot-successful.service \
@@ -44,7 +45,6 @@ do_install() {
 }
 
 FILES:${PN} += "/usr/bin"
-FILES:${PN} += "/etc/systemd/system"
-FILES:${PN} += "/etc/initscripts"
+FILES:${PN} += "/etc"
 
 RDEPENDS:${PN} += "bash"

@@ -16,8 +16,9 @@ IMAGE_INSTALL += "ankiwifi"
 #
 # Victor stuff
 IMAGE_INSTALL += "vic-anim"
-# IMAGE_INSTALL += "vic-christen"
-IMAGE_INSTALL += "vic-cloud"
+
+IMAGE_INSTALL += "${@oe.utils.conditional('CLOUDLESS', '1', 'vic-cloudless', 'vic-cloud', d)}"
+
 IMAGE_INSTALL += "vic-crashuploader"
 IMAGE_INSTALL += "vic-dasmgr"
 IMAGE_INSTALL += "vic-engine"

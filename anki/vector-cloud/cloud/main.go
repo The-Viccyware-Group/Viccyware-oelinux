@@ -18,7 +18,6 @@ import (
 	"github.com/digital-dream-labs/vector-cloud/internal/ipc"
 	"github.com/digital-dream-labs/vector-cloud/internal/jdocs"
 	"github.com/digital-dream-labs/vector-cloud/internal/log"
-	"github.com/digital-dream-labs/vector-cloud/internal/logcollector"
 	"github.com/digital-dream-labs/vector-cloud/internal/robot"
 	"github.com/digital-dream-labs/vector-cloud/internal/token"
 	"github.com/digital-dream-labs/vector-cloud/internal/voice"
@@ -29,6 +28,7 @@ import (
 var checkDataFunc func() error // overwritten by platform_linux.go
 var certErrorFunc func() bool  // overwritten by cert_error_dev.go, determines if error should cause exit
 var platformOpts []cloudproc.Option
+var podCert string = "wirepod-cert.crt"
 
 func getSocketWithRetry(name string, client string) ipc.Conn {
 	for {
@@ -75,6 +75,45 @@ func testReader(serv ipc.Server, send voice.MsgSender) {
 
 func main() {
 
+	var pool = rootcerts.ServerCertPool()
+	// load custom cert
+	// /anki/etc/wirepod-cert.crt
+	certBytes, err := os.ReadFile("/anki/etc/" + podCert)
+	if err == nil {
+		log.Println("Found /anki/etc/" + podCert + ", appending")
+		ok := pool.AppendCertsFromPEM(certBytes)
+		if ok {
+			log.Println("Successfully loaded custom cert! Writing to /data")
+			os.WriteFile("/data/data/wirepod-cert.crt", certBytes, 0644)
+		} else {
+			log.Println("Failed to load /anki/etc/"+podCert, ", trying /data/data/wirepod-cert.crt")
+			certBytes, err := os.ReadFile("/data/data/" + podCert)
+			if err == nil {
+				log.Println("Found /data/data/" + podCert + ", appending")
+				ok := pool.AppendCertsFromPEM(certBytes)
+				if ok {
+					log.Println("Successfully loaded custom cert!")
+				} else {
+					log.Println("Custom cert loader failed")
+				}
+			}
+		}
+	} else {
+		log.Println("Failed to load /anki/etc/"+podCert, ", trying /data/data/wirepod-cert.crt")
+		certBytes, err := os.ReadFile("/data/data/" + podCert)
+		if err == nil {
+			log.Println("Found /data/data/" + podCert + ", appending")
+			ok := pool.AppendCertsFromPEM(certBytes)
+			if ok {
+				log.Println("Successfully loaded custom cert!")
+			} else {
+				log.Println("Custom cert loader failed")
+			}
+		} else {
+			log.Println("Failed to load custom certs")
+		}
+	}
+
 	log.Println("Starting up")
 
 	robot.InstallCrashReporter(log.Tag)
@@ -105,7 +144,7 @@ func main() {
 	ms := flag.Bool("ms", false, "force microsoft handling on the server end")
 	lex := flag.Bool("lex", false, "force amazon handling on the server end")
 
-	awsRegion := flag.String("region", "us-west-2", "AWS Region")
+	//awsRegion := flag.String("region", "us-west-2", "AWS Region")
 
 	flag.Parse()
 
@@ -167,11 +206,12 @@ func main() {
 	options = append(options, cloudproc.WithTokenOptions(tokenOpts...))
 	options = append(options, cloudproc.WithJdocs(jdocs.WithServer()))
 
-	logcollectorOpts := []logcollector.Option{logcollector.WithServer()}
-	logcollectorOpts = append(logcollectorOpts, logcollector.WithHTTPClient(getHTTPClient()))
-	logcollectorOpts = append(logcollectorOpts, logcollector.WithS3UrlPrefix(config.Env.LogFiles))
-	logcollectorOpts = append(logcollectorOpts, logcollector.WithAwsRegion(*awsRegion))
-	options = append(options, cloudproc.WithLogCollectorOptions(logcollectorOpts...))
+	// disable the STUPID log collector. holy shit
+	// logcollectorOpts := []logcollector.Option{logcollector.WithServer()}
+	// logcollectorOpts = append(logcollectorOpts, logcollector.WithHTTPClient(getHTTPClient()))
+	// logcollectorOpts = append(logcollectorOpts, logcollector.WithS3UrlPrefix(config.Env.LogFiles))
+	// logcollectorOpts = append(logcollectorOpts, logcollector.WithAwsRegion(*awsRegion))
+	//options = append(options, cloudproc.WithLogCollectorOptions(logcollectorOpts...))
 
 	cloudproc.Run(context.Background(), options...)
 
