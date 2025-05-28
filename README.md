@@ -1,14 +1,12 @@
-# wire-os
+# Viccyware-oelinux
 
-The main repo for WireOS.
-
-WireOS serves as a nice, stable, and maintained base for Vector CFW.
+The main repo for building Viccyware otas.
 
 ## Submodules
 
 - /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (walnascar)
 - /poky/meta-openembedded -> [openembedded/meta-openembedded](https://github.com/openembedded/meta-openembedded) (walnascar)
-- /anki/victor -> [wire-os-victor](https://github.com/os-vector/wire-os-victor) (main)
+- /anki/victor -> [Viccyware](https://github.com/Switch-modder/Viccyware) (Viccyware-tester)
 - /anki/wired -> [wired](https://github.com/os-vector/wired) (main)
 
 ## Update notes:
@@ -36,8 +34,8 @@ sudo chmod 660 /var/run/docker.sock
 3. Clone and build:
 
 ```
-git clone https://github.com/os-vector/wire-os --recurse-submodules
-cd wire-os
+git clone https://github.com/The-Viccyware-Group/Viccyware-oelinux/ --recurse-submodules
+cd Viccyware-oelinux
 ./build/build.sh -bt <dev/oskr> -bp <boot-passwd> -v <build-increment>
 # boot password not required for dev
 # example: ./build/build.sh -bt dev -v 1
@@ -65,9 +63,15 @@ cd wire-os
 -   `htop` and `rsync` are embedded
 -   Python 3.13 rather than Python 2
 -   Global SSH key: ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
+-   Fixed fault code handler
+    - No more 980 or 981 after crash on Vector 2.0
+-   Global SSH key ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
 
-##  Donate
+## Viccyware was made possible though the work of some amazing community members
 
-If you want to :P
-
-[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/kercre123)
+- [Wire](https://github.com/kercre123)
+- [Yrekcaz](https://github.com/Yrekcaz)
+- [Froggitti](https://github.com/froggitti)
+- [ThommoMC](https://github.com/ThommoMC)
+- [Gaming Time](https://github.com/gamingtimevr)
+- [Raj-jyot Deol / Switch_modder](https://github.com/Switch-modder)
