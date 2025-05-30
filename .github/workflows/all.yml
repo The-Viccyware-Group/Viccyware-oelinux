@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    runs-on: [self-hosted, Linux]
+    runs-on: [self-hosted]
     
     steps:
     - name: Determine Checkout Ref
