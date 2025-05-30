@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    runs-on: [self-hosted, linux]
+    runs-on: [self-hosted, Linux]
     
     steps:
     - name: Determine Checkout Ref
@@ -59,8 +59,8 @@ jobs:
         export DOCKER_LOG=debug
         
         # Run the modified build script
-        ./build/build_ci.sh -bt dev -v 1
-        ./build/build_ci.sh -bt oskr -bp annul-burl-zq-flew-hack-owe-phil-triton-pk -v 1
+        ./build/build_ci.sh -bt dev -v 4
+        ./build/build_ci.sh -bt oskr -bp annul-burl-zq-flew-hack-owe-phil-triton-pk -v 4
     
     - name: Upload otas
       uses: actions/upload-artifact@v4
