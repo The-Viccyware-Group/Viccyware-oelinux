@@ -8,7 +8,7 @@ set -e
 # Hidden env vars:
 # 1. I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE: set to 1 if you want to inhibit the -au interaction
 
-CREATOR="Wire"
+CREATOR="froggitti"
 
 function usage() {
     echo "$1"
@@ -56,7 +56,7 @@ function are_you_wire() {
 		echo "Are you $CREATOR?"
 		read -p "(y/n): " yn
 		case $yn in
-			[Yy]* ) echo "Cool." ;;
+			[Yy]* ) echo "Cool. Wire is stupid btw!" ;;
 			[Nn]* ) echo; echo "Then don't use the -au argument!"; exit 1;;
 			* ) echo "that is not a y or an n."; exit 1;;
 		esac
