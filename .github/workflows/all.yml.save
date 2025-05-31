@@ -1,5 +1,5 @@
 # Is this a bad idea?
-name: Build Viccyware dev otas
+name: Build Viccyware otas all types
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    runs-on: [self-hosted, linux]
+    runs-on: [self-hosted]
     
     steps:
     - name: Determine Checkout Ref
@@ -59,13 +59,13 @@ jobs:
         export DOCKER_LOG=debug
         
         # Run the modified build script
-        export I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE=1
-        ./build/build_ci.sh -bt dev -v 3
+        ./build/build_ci.sh -bt dev -v 4
+        ./build/build_ci.sh -bt oskr -bp annul-burl-zq-flew-hack-owe-phil-triton-pk -v 4
     
     - name: Upload otas
       uses: actions/upload-artifact@v4
       with:
         name: ota-artifacts-${{ steps.get-ref.outputs.ref }}
-        path: _build/*0.5.*d.ota
+        path: _build/*0.5.*.ota
         retention-days: 30
         if-no-files-found: warn
