@@ -60,8 +60,8 @@ jobs:
         
         # Run the modified build script
         export I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE=1
-        ./build/build_ci.sh -bt dev -v 3
-        ./build/build_ci.sh -bt oskr -bp annul-burl-zq-flew-hack-owe-phil-triton-pk -v 3
+        ./build/build_ci.sh -bt dev -v 4
+        ./build/build_ci.sh -bt oskr -bp annul-burl-zq-flew-hack-owe-phil-triton-pk -v 4
     
     - name: Upload otas
       uses: actions/upload-artifact@v4
