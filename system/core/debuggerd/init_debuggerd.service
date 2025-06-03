@@ -31,6 +31,12 @@ SourcePath=/etc/initscripts/init_debuggerd
 Description=debuggerd Service
 DefaultDependencies=no
 
+#
+# <anki> VIC-1504: Don't start until /data has been remounted </anki>
+#
+Wants=mount-data.service
+After=mount-data.service
+
 [Service]
 Type=forking
 Restart=no

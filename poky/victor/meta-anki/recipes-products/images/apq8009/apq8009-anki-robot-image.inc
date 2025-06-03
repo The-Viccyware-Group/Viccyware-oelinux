@@ -5,7 +5,7 @@
 # IMAGE_INSTALL += "animfail"
 # IMAGE_INSTALL += "ankibluetoothd"
 # IMAGE_INSTALL += "anki-audio-init"
-# IMAGE_INSTALL += "anki-crash-log"
+IMAGE_INSTALL += "anki-crash-log"
 IMAGE_INSTALL += "anki-robot-target"
 IMAGE_INSTALL += "anki-version"
 # IMAGE_INSTALL += "ankiinit"

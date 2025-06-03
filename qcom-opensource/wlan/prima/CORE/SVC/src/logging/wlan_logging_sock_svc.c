@@ -1018,11 +1018,11 @@ static int send_filled_buffers_to_user(void)
 
 		skb = dev_alloc_skb(MAX_LOGMSG_LENGTH);
 		if (skb == NULL) {
-			if (!rate_limit) {
-				pr_err("%s: dev_alloc_skb() failed for msg size[%d] drop count = %u\n",
-					__func__, MAX_LOGMSG_LENGTH,
-					gwlan_logging.drop_count);
-			}
+			//if (!rate_limit) {
+				//pr_err("%s: dev_alloc_skb() failed for msg size[%d] drop count = %u\n",
+				//	__func__, MAX_LOGMSG_LENGTH,
+				//	gwlan_logging.drop_count);
+			//}
 			rate_limit = 1;
 			ret = -ENOMEM;
 			break;

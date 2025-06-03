@@ -56,7 +56,7 @@ libbacktrace_shared_libraries_target := \
 
 libbacktrace_shared_libraries := \
 	libbase \
-	libunwind \
+	libunwindandroid \
 
 libbacktrace_shared_libraries_host := \
 	liblog \

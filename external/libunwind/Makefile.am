@@ -116,17 +116,17 @@ endif
 
 
 
-lib_LTLIBRARIES = libunwind.la
-libunwind_la_CPPFLAGS := $(unwind_headers)
-libunwind_la_SOURCES  = $(target_sources)
-libunwind_la_CPPFLAGS += -DANDROID
+lib_LTLIBRARIES = libunwindandroid.la
+libunwindandroid_la_CPPFLAGS := $(unwind_headers)
+libunwindandroid_la_SOURCES  = $(target_sources)
+libunwindandroid_la_CPPFLAGS += -DANDROID
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = ./src/unwind/libunwind.pc
+pkgconfig_DATA = ./src/unwind/libunwindandroid.pc
 EXTRA_DIST = $(pkgconfig_DATA)
 
 # Export headers
-unwind_includedir=$(includedir)/libunwind
+unwind_includedir=$(includedir)/libunwindandroid
 unwind_include_HEADERS :=${top_srcdir}/include/libunwind.h
 unwind_include_HEADERS +=${top_srcdir}/include/libunwind-arm.h
 unwind_include_HEADERS +=${top_srcdir}/include/libunwind-aarch64.h

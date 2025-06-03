@@ -1,0 +1,7 @@
+src/arm/libunwindandroid_la-getcontext.lo: src/arm/getcontext.S \
+ /home/kerigan/projects/wire-os/old-toolchain/arm/arm-linux-gnueabi/libc/usr/include/stdc-predef.h \
+ src/arm/offsets.h
+
+/home/kerigan/projects/wire-os/old-toolchain/arm/arm-linux-gnueabi/libc/usr/include/stdc-predef.h:
+
+src/arm/offsets.h:

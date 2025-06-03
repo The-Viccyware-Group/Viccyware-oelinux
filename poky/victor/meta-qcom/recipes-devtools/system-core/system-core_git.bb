@@ -12,7 +12,17 @@ S = "${WORKDIR}/system/core"
 
 PR = "r19"
 
-DEPENDS += "virtual/kernel openssl glib-2.0 libselinux ext4-utils libcutils libmincrypt libbase libutils libunwind"
+#CC = "${WORKSPACE}/old-toolchain/arm/bin/arm-linux-gnueabi-gcc --sysroot=${WORKSPACE}/poky/build/tmp-glibc/work/armv7a-neon-vfpv4-oe-linux-gnueabi/${PN}/${PV}/recipe-sysroot"
+#CXX = "${WORKSPACE}/old-toolchain/arm/bin/arm-linux-gnueabi-g++ --sysroot=${WORKSPACE}/poky/build/tmp-glibc/work/armv7a-neon-vfpv4-oe-linux-gnueabi/${PN}/${PV}/recipe-sysroot"
+#LD = "${WORKSPACE}/old-toolchain/arm/bin/arm-linux-gnueabi-ld"
+
+do_configure:prepend () {
+    export CFLAGS="$(echo $LDFLAGS | sed 's/-fcanon-prefix-map=[^ ]*//g' | sed 's/-fcanon-prefix-map//g' | sed 's/-fmacro-prefix-map=[^ ]*//g' | sed 's/-fdebug-prefix-map=[^ ]*//g' | sed 's/-ffile-prefix-map=[^ ]*//g') -I${WORKSPACE}/poky/build/tmp-glibc/work/armv7a-neon-vfpv4-oe-linux-gnueabi/system-core/git/recipe-sysroot/usr/include/libunwindandroid -Wno-error -Wno-implicit-function-declaration"
+    export CXXFLAGS="$(echo $LDFLAGS | sed 's/-fcanon-prefix-map=[^ ]*//g' | sed 's/-fcanon-prefix-map//g' | sed 's/-fmacro-prefix-map=[^ ]*//g' | sed 's/-fdebug-prefix-map=[^ ]*//g' | sed 's/-ffile-prefix-map=[^ ]*//g') -I${WORKSPACE}/poky/build/tmp-glibc/work/armv7a-neon-vfpv4-oe-linux-gnueabi/system-core/git/recipe-sysroot/usr/include/libunwindandroid -Wno-error -Wno-implicit-function-declaration"
+    export LDFLAGS="$(echo $LDFLAGS | sed 's/-fcanon-prefix-map=[^ ]*//g' | sed 's/-fcanon-prefix-map//g' | sed 's/-fmacro-prefix-map=[^ ]*//g' | sed 's/-fdebug-prefix-map=[^ ]*//g' | sed 's/-ffile-prefix-map=[^ ]*//g')"
+}
+
+DEPENDS += "virtual/kernel openssl glib-2.0 libselinux ext4-utils libcutils libbase libmincrypt libutils libunwindandroid"
 DEPENDS:append_qcs605 = " libsync"
 DEPENDS:append_sdm845 = " libsync"
 
@@ -21,7 +31,7 @@ PROVIDES += "libsysutils logwrapper adb logd usb"
 EXTRA_OECONF = " --with-host-os=${HOST_OS} --with-glib"
 EXTRA_OECONF:append = " --with-sanitized-headers=${STAGING_KERNEL_BUILDDIR}/usr/include"
 EXTRA_OECONF:append = " --with-logd-logging"
-EXTRA_OECONF:append = " --disable-debuggerd"
+#EXTRA_OECONF:append = " --disable-debuggerd"
 EXTRA_OECONF:append = " ${@bb.utils.contains('DISTRO_FEATURES', 'nad-stream-update', '--enable-libfsmgr', '', d)}"
 
 #Disable default libsync in system/core for 4.4 above kernels

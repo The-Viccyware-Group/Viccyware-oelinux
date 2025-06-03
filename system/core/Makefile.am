@@ -1,6 +1,7 @@
 BUILD_COMPONENTS :=
 
 # Builds for both host and device
+BUILD_COMPONENTS += base
 #BUILD_COMPONENTS += libzarchive
 
 if BUILD_DEVICE 
@@ -15,7 +16,7 @@ BUILD_COMPONENTS += logcat
 BUILD_COMPONENTS += libsysutils
 BUILD_COMPONENTS += logd
 endif
-#BUILD_COMPONENTS += libbacktrace
+BUILD_COMPONENTS += libbacktrace
 BUILD_COMPONENTS += leproperties
 BUILD_COMPONENTS += toolbox
 BUILD_COMPONENTS += usb

@@ -136,6 +136,8 @@ AC_CONFIG_FILES([ \
     logwrapper/logwrapper.pc \
     libsync/Makefile \
     libsync/libsync.pc \
+    base/Makefile \
+    base/libbase.pc \
     fs_mgr/Makefile \
     fs_mgr/fs_mgr.pc \
     libsysutils/Makefile \

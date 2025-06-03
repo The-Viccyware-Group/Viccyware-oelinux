@@ -4,7 +4,7 @@ define(pkg_extra, )
 define(pkg_maintainer, libunwind-devel@nongnu.org)
 define(mkvers, $1.$2$3)
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT([libunwind],[mkvers(pkg_major, pkg_minor, pkg_extra)],[pkg_maintainer])
+AC_INIT([libunwindandroid],[mkvers(pkg_major, pkg_minor, pkg_extra)],[pkg_maintainer])
 AC_CONFIG_SRCDIR(src/mi/backtrace.c)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_TARGET
@@ -107,27 +107,27 @@ SET_ARCH([$host_cpu],[host_arch])
 SET_ARCH([$target_cpu],[target_arch])
 
 AC_ARG_ENABLE(coredump,
-	AS_HELP_STRING([--enable-coredump],[building libunwind-coredump library]),,
+	AS_HELP_STRING([--enable-coredump],[building libunwindandroid-coredump library]),,
         [AS_CASE([$host_arch], [aarch64*|arm*|mips*|sh*|x86*], [enable_coredump=yes], [enable_coredump=no])]
 )
 
-AC_MSG_CHECKING([if we should build libunwind-coredump])
+AC_MSG_CHECKING([if we should build libunwindandroid-coredump])
 AC_MSG_RESULT([$enable_coredump])
 
 AC_ARG_ENABLE(ptrace,
-	AS_HELP_STRING([--enable-ptrace],[building libunwind-ptrace library]),,
+	AS_HELP_STRING([--enable-ptrace],[building libunwindandroid-ptrace library]),,
         [AC_CHECK_HEADER([sys/ptrace.h], [enable_ptrace=yes], [enable_ptrace=no])]
 )
 
-AC_MSG_CHECKING([if we should build libunwind-ptrace])
+AC_MSG_CHECKING([if we should build libunwindandroid-ptrace])
 AC_MSG_RESULT([$enable_ptrace])
 
 AC_ARG_ENABLE(setjmp,
-	AS_HELP_STRING([--enable-setjmp],[building libunwind-setjmp library]),,
+	AS_HELP_STRING([--enable-setjmp],[building libunwindandroid-setjmp library]),,
         [AS_IF([test x$target_arch == x$host_arch], [enable_setjmp=yes], [enable_setjmp=no])]
 )
 
-AC_MSG_CHECKING([if we should build libunwind-setjmp])
+AC_MSG_CHECKING([if we should build libunwindandroid-setjmp])
 AC_MSG_RESULT([$enable_setjmp])
 
 AC_MSG_CHECKING([for build architecture])
@@ -205,7 +205,7 @@ AC_MSG_RESULT([$enable_debug])
 
 AC_MSG_CHECKING([whether to enable C++ exception support])
 AC_ARG_ENABLE(cxx_exceptions,
-AS_HELP_STRING([--enable-cxx-exceptions],[use libunwind to handle C++ exceptions]),,
+AS_HELP_STRING([--enable-cxx-exceptions],[use libunwindandroid to handle C++ exceptions]),,
 [
 # C++ exception handling doesn't work too well on x86
 case $target_arch in
@@ -381,5 +381,5 @@ AC_SUBST(enable_cxx_exceptions)
 AC_SUBST(enable_debug_frame)
 AC_SUBST(DLLIB)
 
-AC_CONFIG_FILES(Makefile src/unwind/libunwind.pc)
+AC_CONFIG_FILES(Makefile src/unwind/libunwindandroid.pc)
 AC_OUTPUT
