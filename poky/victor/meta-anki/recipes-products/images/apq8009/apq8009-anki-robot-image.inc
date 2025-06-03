@@ -44,7 +44,7 @@ IMAGE_INSTALL += "fake-hwclock"
 IMAGE_INSTALL += "rebooter"
 IMAGE_INSTALL += "update-os"
 IMAGE_INSTALL += "anki-update-engine"
-IMAGE_INSTALL += "faultcodesound"IMAGE_INSTALL += "fault-code"
+IMAGE_INSTALL += "fault-code"
 IMAGE_INSTALL += "faultcodesound"
 
 IMAGE_INSTALL += "python3-netclient"
