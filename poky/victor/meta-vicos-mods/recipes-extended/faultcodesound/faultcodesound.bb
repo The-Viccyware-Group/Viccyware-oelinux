@@ -6,7 +6,7 @@ SRC_URI = "file://xp-error.wav"
 
 do_install() {
     install -d ${D}${bindir}
-    install -m 0644 ${WORKDIR}/myfile.wav ${D}${bindir}/
+    install -m 0644 ${WORKDIR}/xp-error.wav ${D}${bindir}/
 }
 
 FILES:${PN} = "${bindir}/xp-error.wav"
