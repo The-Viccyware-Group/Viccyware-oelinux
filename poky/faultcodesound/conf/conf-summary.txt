@@ -1,0 +1,1 @@
+This layer is built from an old msm-qti-* BSP pack. It has been updated to work with modern Yocto, and designed only to work with the APQ8009 CPU.
