@@ -1,0 +1,22 @@
+inherit qcommon qprebuilt qlicense pkgconfig autotools gccseven
+
+DESCRIPTION = "Audio Calibration Library"
+PR = "r11"
+
+TARGETNAME = "${@d.getVar('BASEMACHINE', True).replace('mdm','').replace('apq','')}"
+SRC_DIR = "${WORKSPACE}/audio/mm-audio/audcal/"
+
+S = "${WORKDIR}/audio/mm-audio/audcal"
+
+DEPENDS = "glib-2.0 diag common acdbmapper"
+
+EXTRA_OECONF += "--with-sanitized-headers=${STAGING_KERNEL_BUILDDIR}/usr/include \
+                 --with-glib \
+                 --enable-target=${BASEMACHINE}"
+
+do_install:append() {
+    if [ -d ${S}/family-b/acdbdata/${TARGETNAME}/MTP/ ];then
+        mkdir -p ${D}${sysconfdir}/
+        install -m 0755 ${S}/family-b/acdbdata/${TARGETNAME}/MTP/*  -D ${D}${sysconfdir}
+    fi
+}

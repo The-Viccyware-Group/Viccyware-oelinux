@@ -21,13 +21,13 @@ usr/bin/emr-cat                 0   6   2755
 # ================================
 #
 
-usr/qtiroot/usr/bin/ankibluetoothd      2904 2904 0750
+usr/bin/ankibluetoothd      2904 2904 0750
 usr/bin/viccubetool         2904 2904 0750
-usr/qtiroot/misc/bluetooth              2904 2904 0750
-usr/qtiroot/misc/bluetooth/bt_did.conf  2904 2904 0640
-usr/qtiroot/misc/bluetooth/bt_stack.conf  2904 2904 0640
-usr/qtiroot/misc/bluetooth/init.msm.bt.sh  2904 2904 0750
-usr/qtiroot/misc/bluetooth/iot_devlist.conf 2904 2904 0640
+misc/bluetooth              2904 2904 0750
+misc/bluetooth/bt_did.conf  2904 2904 0640
+misc/bluetooth/bt_stack.conf  2904 2904 0640
+misc/bluetooth/init.msm.bt.sh  2904 2904 0750
+misc/bluetooth/iot_devlist.conf 2904 2904 0640
 
 
 # Camera Stuff

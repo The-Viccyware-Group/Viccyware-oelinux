@@ -1,3 +1,4 @@
+#include <cstdint>
 /**
  * File: anki_ble_uuids.h
  *

@@ -34,6 +34,7 @@
 #include <ctype.h>
 #include <fcntl.h>
 #include <sys/prctl.h>
+#include <signal.h>
 
 #include <arpa/inet.h>
 #include <netinet/in.h>

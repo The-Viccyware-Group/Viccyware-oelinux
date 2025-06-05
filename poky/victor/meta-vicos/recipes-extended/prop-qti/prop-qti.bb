@@ -33,19 +33,19 @@ do_install () {
 	# this is now installed by the update-engine recipe
 	#ln -sf /lib/systemd/system/boot-successful.service ${D}/lib/systemd/system/multi-user.target.wants/
 	ln -sf /lib/systemd/system/logd.service ${D}/lib/systemd/system/multi-user.target.wants/
-	ln -sf /lib/systemd/system/mdsprpcd.service ${D}/lib/systemd/system/multi-user.target.wants/
+	#ln -sf /lib/systemd/system/mdsprpcd.service ${D}/lib/systemd/system/multi-user.target.wants/
 	ln -sf /lib/systemd/system/mm-anki-camera.service ${D}/lib/systemd/system/multi-user.target.wants/
 	ln -sf /lib/systemd/system/mm-qcamera-daemon.service ${D}/lib/systemd/system/multi-user.target.wants/
-	ln -sf /lib/systemd/system/qtid.service ${D}/lib/systemd/system/multi-user.target.wants/
-	ln -sf /lib/systemd/system/qti_system_daemon.service ${D}/lib/systemd/system/multi-user.target.wants/
-	ln -sf /lib/systemd/system/rmt_storage.service ${D}/lib/systemd/system/multi-user.target.wants/
-	ln -sf /lib/systemd/system/init_audio.service ${D}/lib/systemd/system/multi-user.target.wants/
-	ln -sf /lib/systemd/system/ankibluetoothd.service ${D}/lib/systemd/system/multi-user.target.wants/
-	ln -sf /lib/systemd/system/btproperty.service ${D}/lib/systemd/system/multi-user.target.wants/
-	ln -sf /lib/systemd/system/leprop.service ${D}/lib/systemd/system/multi-user.target.wants/
+	#ln -sf /lib/systemd/system/qtid.service ${D}/lib/systemd/system/multi-user.target.wants/
+	#ln -sf /lib/systemd/system/qti_system_daemon.service ${D}/lib/systemd/system/multi-user.target.wants/
+	#ln -sf /lib/systemd/system/rmt_storage.service ${D}/lib/systemd/system/multi-user.target.wants/
+	#ln -sf /lib/systemd/system/init_audio.service ${D}/lib/systemd/system/multi-user.target.wants/
+	#ln -sf /lib/systemd/system/ankibluetoothd.service ${D}/lib/systemd/system/multi-user.target.wants/
+	#ln -sf /lib/systemd/system/btproperty.service ${D}/lib/systemd/system/multi-user.target.wants/
+	#ln -sf /lib/systemd/system/leprop.service ${D}/lib/systemd/system/multi-user.target.wants/
 	ln -sf /lib/systemd/system/mount-data.service ${D}/lib/systemd/system/local-fs.target.requires/
 	ln -sf /lib/systemd/system/setup-qtiroot.service ${D}/lib/systemd/system/multi-user.target.wants/
-	ln -sf /lib/systemd/system/setup-persist.service ${D}/lib/systemd/system/multi-user.target.wants/
+	#ln -sf /lib/systemd/system/setup-persist.service ${D}/lib/systemd/system/multi-user.target.wants/
 }
 
 FILES:${PN} = "/usr/qtiroot \

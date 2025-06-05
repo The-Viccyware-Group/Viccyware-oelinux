@@ -2,6 +2,8 @@
 
 The main repo for building Viccyware otas.
 
+This builds the OS, the /anki programs (`victor`), and creates a final OTA. This repo can be thought of as `wire-os-oelinux`.
+
 ## Submodules
 
 - /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (walnascar)
@@ -35,7 +37,7 @@ sudo chmod 660 /var/run/docker.sock
 3. Clone and build:
 
 ```
-git clone https://github.com/The-Viccyware-Group/Viccyware-oelinux/ --recurse-submodules
+git clone --recursive https://github.com/The-Viccyware-Group/Viccyware-oelinux/ 
 cd Viccyware-oelinux
 ./build/build.sh -bt <dev/oskr> -bp <boot-passwd> -v <build-increment>
 # boot password not required for dev
@@ -44,7 +46,7 @@ cd Viccyware-oelinux
 
 ### Where is my OTA?
 
-`./_build/3.0.1.1.ota`
+`./_build/Viccyware-0.5.(x).ota`
 
 ## Differences compared to normal Vector FW
 
@@ -63,10 +65,17 @@ cd Viccyware-oelinux
     -   Custom wake words in :8080 webserver!
 -   `htop` and `rsync` are embedded
 -   Python 3.13 rather than Python 2
--   Global SSH key: ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
 -   Fixed fault code handler
     - No more 980 or 981 after crash on Vector 2.0
 -   Global SSH key ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
+
+## Helpful scripts
+
+-	`anki-debug`
+	-	If you are debugging `victor` and want to see backtraces in /var/log/messages, run this to enable those.
+-	`ddn <on/off>`
+	-	Turns on/off DevDoNothing, which makes the bot stand still until shaken.
+
 
 ## Viccyware was made possible though the work of some amazing community members
 

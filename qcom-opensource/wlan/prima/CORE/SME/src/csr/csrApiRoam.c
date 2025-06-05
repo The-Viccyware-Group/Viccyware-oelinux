@@ -10253,9 +10253,6 @@ void csrRoamCheckForLinkStatusChange( tpAniSirGlobal pMac, tSirSmeRsp *pSirMsg )
 #ifndef WLAN_MDM_CODE_REDUCTION_OPT
                 sme_QosCsrEventInd(pMac, (v_U8_t)sessionId, SME_QOS_CSR_DISCONNECT_IND, NULL);
 #endif
-#ifdef WLAN_FEATURE_NEIGHBOR_ROAMING
-                csrRemoveNeighbourRoamPreauthCommand(pMac);
-#endif
                 csrRoamLinkDown(pMac, sessionId);
                 csrRoamIssueWmStatusChange( pMac, sessionId, eCsrDeauthenticated, pSirMsg );
             }
@@ -12293,7 +12290,8 @@ static void csrRoamGetBssStartParms( tpAniSirGlobal pMac, tCsrRoamProfile *pProf
             //Because LIM only verifies it against 11a, 11b or 11g, set only 11g or 11a here
             if(eCSR_BAND_24 == eBand)
             {
-                nwType = eSIR_11G_NW_TYPE;
+                // VIC-4147 Always set 11A mode here, to omit legacy 802.11b rates   
+                nwType = eSIR_11A_NW_TYPE;
             }
             else
             {

@@ -1,3 +1,5 @@
+#include <functional>
+#include <cstdint>
 /**
  * File: btstack.cpp
  *

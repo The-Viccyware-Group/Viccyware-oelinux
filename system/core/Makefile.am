@@ -1,7 +1,7 @@
 BUILD_COMPONENTS :=
 
 # Builds for both host and device
-BUILD_COMPONENTS += base
+#BUILD_COMPONENTS += base
 #BUILD_COMPONENTS += libzarchive
 
 if BUILD_DEVICE 

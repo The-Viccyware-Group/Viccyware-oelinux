@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [[ ! -d poky ]]; then
 	if [[ -d ../poky ]]; then
 		cd ..
@@ -11,17 +13,22 @@ fi
 
 OD="$(pwd)"
 
+if [[ -f old-toolchain/arm/gcc-linaro-4.9-2016.02-manifest.txt ]]; then
+	echo "old 4.9 toolchain detected, replacing with 7.5 (this is used for kernel + some specific programs)"
+	echo "ankibluetoothd bt-property common btvendorhal configdb dsutils diag fluoride hci-qcomm-init libbt-vendor libhardware qmi qmi-client-helper qmuxd qmi-framework time-genoff xmllib system-core libbase libunwindandroid libutils linux-msm" > wire-cleaning
+fi
+
 # if hf compiler, we want to replace with armel
-if [[ ! -d old-toolchain/arm ]] || [[ -d old-toolchain/arm/arm-linux-gnueabihf ]]; then
-	if [[ -d old-toolchain ]]; then
-		echo "as root because this was originally done in a docker container, so perms are messed up"
-		sudo rm -rf old-toolchain
-	fi
+if [[ ! -d old-toolchain/arm ]] || [[ -d old-toolchain/arm/arm-linux-gnueabihf ]] || [[ -f old-toolchain/arm/gcc-linaro-4.9-2016.02-manifest.txt ]]; then
+	#if [[ -d old-toolchain ]]; then
+	#	echo "as root because this was originally done in a docker container, so perms are messed up"
+	rm -rf old-toolchain
+	#fi
 	mkdir -p old-toolchain
 	cd old-toolchain
-	wget -q --show-progress https://github.com/os-vector/wire-os-externals/releases/download/4.0.0-r05/armel-4.9.3.tar.gz
-	tar -zxf armel-4.9.3.tar.gz
-	rm armel-4.9.3.tar.gz
+	wget -q --show-progress https://github.com/os-vector/wire-os-externals/releases/download/4.0.0-r05/armel-7.5.0.tar.gz
+	tar -zxf armel-7.5.0.tar.gz
+	rm armel-7.5.0.tar.gz
 fi
 
 cd "$OD"

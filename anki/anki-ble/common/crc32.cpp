@@ -1,3 +1,4 @@
+#include <cstdint>
 /**
  * File: crc32.cpp
  *

@@ -10,7 +10,7 @@ WLAN_SELECT := CONFIG_PRIMA_WLAN=m
 endif
 
 # Build/Package options for 8916, 8974, 8226, 8610, 8909, 8952, 8937, 8953 targets
-ifneq (,$(filter msm8916 msm8974 msm8226 msm8610 msm8952 msm8909 titanium,$(TARGET_BOARD_PLATFORM)))
+ifneq (,$(filter msm8916 msm8974 msm8226 msm8610 msm8909 msm8952 msm8937 msm8953 titanium,$(TARGET_BOARD_PLATFORM)))
 WLAN_CHIPSET := pronto
 WLAN_SELECT := CONFIG_PRONTO_WLAN=m
 endif
@@ -46,6 +46,24 @@ ifneq ($(findstring opensource,$(LOCAL_PATH)),)
     WLAN_PROPRIETARY := 0
 else
     WLAN_PROPRIETARY := 1
+endif
+
+ifeq ($(WLAN_PROPRIETARY),1)
+    WLAN_BLD_DIR := vendor/qcom/proprietary/wlan
+else
+ifneq ($(TARGET_SUPPORTS_WEARABLES),true)
+ifneq ($(ANDROID_BUILD_TOP),)
+    WLAN_BLD_DIR := $(ANDROID_BUILD_TOP)/vendor/qcom/opensource/wlan
+else
+    WLAN_BLD_DIR := vendor/qcom/opensource/wlan
+endif
+else
+ifneq ($(ANDROID_BUILD_TOP),)
+    WLAN_BLD_DIR := $(ANDROID_BUILD_TOP)/device/qcom/msm8909w/opensource/wlan
+else
+    WLAN_BLD_DIR := device/qcom/msm8909w/opensource/wlan
+endif
+endif
 endif
 
 # DLKM_DIR was moved for JELLY_BEAN (PLATFORM_SDK 16)
@@ -110,10 +128,12 @@ endif
 
 # This is set once per LOCAL_PATH, not per (kernel) module
 
+ifneq ($(ANDROID_BUILD_TOP),)
+KBUILD_OPTIONS := WLAN_ROOT=$(WLAN_BLD_DIR)/prima
+endif
+
 ifeq ($(KBUILD_OPTIONS),)
-KBUILD_OPTIONS += WLAN_PROPRIETARY=$(WLAN_PROPRIETARY)
-KBUILD_OPTIONS += TARGET_SUPPORTS_WEARABLES=$(TARGET_SUPPORTS_WEARABLES)
-KBUILD_OPTIONS += KERNEL_TO_BUILD_ROOT_OFFSET=$(KERNEL_TO_BUILD_ROOT_OFFSET)
+KBUILD_OPTIONS := WLAN_ROOT=$(KERNEL_TO_BUILD_ROOT_OFFSET)$(WLAN_BLD_DIR)/prima
 endif
 
 # We are actually building wlan.ko here, as per the

@@ -18,7 +18,7 @@ python __anonymous () {
 DEPENDS += " mkbootimg-native openssl-native kern-tools-native"
 RDEPENDS:${KERNEL_PACKAGE_NAME}-base = ""
 
-LDFLAGS_aarch64 = "-O1 --hash-style=gnu --as-needed"
+LDFLAGS_aarch64 = "--hash-style=gnu --as-needed"
 
 DEPENDS:append_aarch64 = " libgcc"
 KERNEL_CC:append_aarch64 = " ${TOOLCHAIN_OPTIONS}"

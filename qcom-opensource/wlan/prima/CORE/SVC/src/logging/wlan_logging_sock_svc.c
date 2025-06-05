@@ -621,11 +621,11 @@ void wlan_disable_and_flush_pkt_stats()
 			dev_kfree_skb(skb_to_free);
 
 		/* print every 64th drop count */
-		//if (vos_is_multicast_logging() &&
-		//    (!(gwlan_logging.pkt_stat_drop_cnt % 0x40))) {
-		//	pr_err("%s: drop_count = %u\n",
-		//		__func__, gwlan_logging.pkt_stat_drop_cnt);
-		//}
+		if (vos_is_multicast_logging() &&
+		    (!(gwlan_logging.pkt_stat_drop_cnt % 0x40))) {
+			pr_err("%s: drop_count = %u\n",
+				__func__, gwlan_logging.pkt_stat_drop_cnt);
+		}
 	}
 
 	set_bit(HOST_PKT_STATS_POST, &gwlan_logging.event_flag);
@@ -819,8 +819,8 @@ static int send_fw_log_pkt_to_user(void)
 
 		ret = nl_srv_bcast(skb);
 		if ((ret < 0) && (ret != -ESRCH)) {
-			//pr_info("%s: Send Failed %d drop_count = %u\n",
-			//	__func__, ret, ++gwlan_logging.fw_log_pkt_drop_cnt);
+			pr_info("%s: Send Failed %d drop_count = %u\n",
+				__func__, ret, ++gwlan_logging.fw_log_pkt_drop_cnt);
 		} else {
 			ret = 0;
 		}
@@ -915,8 +915,8 @@ static int send_data_mgmt_log_pkt_to_user(void)
 
 		ret =  nl_srv_bcast(skb);
 		if (ret < 0) {
-			//pr_info("%s: Send Failed %d drop_count = %u\n",
-			//	__func__, ret, ++gwlan_logging.pkt_drop_cnt);
+			pr_info("%s: Send Failed %d drop_count = %u\n",
+				__func__, ret, ++gwlan_logging.pkt_drop_cnt);
 		} else {
 			ret = 0;
 		}
@@ -1018,11 +1018,11 @@ static int send_filled_buffers_to_user(void)
 
 		skb = dev_alloc_skb(MAX_LOGMSG_LENGTH);
 		if (skb == NULL) {
-			//if (!rate_limit) {
-				//pr_err("%s: dev_alloc_skb() failed for msg size[%d] drop count = %u\n",
-				//	__func__, MAX_LOGMSG_LENGTH,
-				//	gwlan_logging.drop_count);
-			//}
+			if (!rate_limit) {
+				pr_err("%s: dev_alloc_skb() failed for msg size[%d] drop count = %u\n",
+					__func__, MAX_LOGMSG_LENGTH,
+					gwlan_logging.drop_count);
+			}
 			rate_limit = 1;
 			ret = -ENOMEM;
 			break;
@@ -1049,10 +1049,10 @@ static int send_filled_buffers_to_user(void)
 				&gwlan_logging.free_list);
 			spin_unlock_irqrestore(&gwlan_logging.spin_lock,
 							flags);
-			//pr_err("%s: drop_count = %u\n", __func__,
-			//	++gwlan_logging.drop_count);
-			//pr_err("%s: nlmsg_put() failed for msg size[%d]\n",
-			//	__func__, tot_msg_len);
+			pr_err("%s: drop_count = %u\n", __func__,
+				++gwlan_logging.drop_count);
+			pr_err("%s: nlmsg_put() failed for msg size[%d]\n",
+				__func__, tot_msg_len);
 			dev_kfree_skb(skb);
 			skb = NULL;
 			ret = -EINVAL;
@@ -1074,8 +1074,8 @@ static int send_filled_buffers_to_user(void)
 		if (ret < 0) {
 			if (__ratelimit(&errCnt))
 			{
-			    //pr_info("%s: Send Failed %d drop_count = %u\n",
-			//	  __func__, ret, gwlan_logging.drop_count);
+			    pr_info("%s: Send Failed %d drop_count = %u\n",
+				  __func__, ret, gwlan_logging.drop_count);
 			}
 			gwlan_logging.drop_count++;
 			skb = NULL;
@@ -1186,8 +1186,8 @@ static int send_per_pkt_stats_to_user(void)
 
 		ret = nl_srv_bcast(plog_msg->skb);
 		if (ret < 0) {
-			//pr_info("%s: Send Failed %d drop_count = %u\n",
-			//	__func__, ret, ++gwlan_logging.fw_log_pkt_drop_cnt);
+			pr_info("%s: Send Failed %d drop_count = %u\n",
+				__func__, ret, ++gwlan_logging.fw_log_pkt_drop_cnt);
 		} else {
 			ret = 0;
 		}

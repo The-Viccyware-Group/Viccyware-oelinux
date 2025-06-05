@@ -1,4 +1,4 @@
-inherit autotools pkgconfig
+inherit autotools pkgconfig gccseven
 
 DESCRIPTION = "Build LE libutils"
 HOMEPAGE = "http://developer.android.com/"

@@ -210,7 +210,7 @@ function build-dev() {
   build-victor-robot-perf-image
 }
 
-function build-dev-cloudless() {
+function build-devcloudless() {
   build-8009-robot-perf-cloudless-image
 }
 
@@ -225,7 +225,8 @@ function clean-oskr() {
   export VARIANT=perf
   export PRODUCT=robot
   export OSKR=1
-  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine update-engine
+  wire-clean
+  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine update-engine wireutils wlan-opensource
 }
 
 function clean-dev() {
@@ -234,17 +235,19 @@ function clean-dev() {
   export DISTRO=msm-perf
   export VARIANT=perf
   export PRODUCT=robot
-  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine update-engine
+  wire-clean
+  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine update-engine wireutils wlan-opensource
 }
 
-function clean-dev-cloudless() {
+function clean-devcloudless() {
   unset_bb_env
   export MACHINE=apq8009-robot
   export DISTRO=msm-perf
   export VARIANT=perf
   export PRODUCT=robot
   export CLOUDLESS=1
-  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine update-engine vic-cloudless
+  wire-clean
+  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine update-engine vic-cloudless wireutils wlan-opensource
 }
 
 function clean-prod() {
@@ -253,7 +256,16 @@ function clean-prod() {
   export DISTRO=msm-user
   export VARIANT=perf
   export PRODUCT=robot
-  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine
+  wire-clean
+  cdbitbake -c cleanall victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf prop-qti vic-engine wireutils wlan-opensource
+}
+
+function wire-clean() {
+	if [[ -f ${WS}/wire-cleaning ]]; then
+		echo "Cleaning file detected, cleaning: $(cat ${WS}/wire-cleaning)"
+		cdbitbake -c cleanall $(cat ${WS}/wire-cleaning)
+		rm -f ${WS}/wire-cleaning
+	fi
 }
 
 # Utility commands

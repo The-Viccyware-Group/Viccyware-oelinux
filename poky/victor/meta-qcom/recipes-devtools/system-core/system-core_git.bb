@@ -1,4 +1,4 @@
-inherit autotools pkgconfig systemd update-rc.d
+inherit autotools pkgconfig systemd update-rc.d gccseven
 
 DESCRIPTION = "Android system/core components"
 HOMEPAGE = "http://developer.android.com/"
@@ -17,12 +17,11 @@ PR = "r19"
 #LD = "${WORKSPACE}/old-toolchain/arm/bin/arm-linux-gnueabi-ld"
 
 do_configure:prepend () {
-    export CFLAGS="$(echo $LDFLAGS | sed 's/-fcanon-prefix-map=[^ ]*//g' | sed 's/-fcanon-prefix-map//g' | sed 's/-fmacro-prefix-map=[^ ]*//g' | sed 's/-fdebug-prefix-map=[^ ]*//g' | sed 's/-ffile-prefix-map=[^ ]*//g') -I${WORKSPACE}/poky/build/tmp-glibc/work/armv7a-neon-vfpv4-oe-linux-gnueabi/system-core/git/recipe-sysroot/usr/include/libunwindandroid -Wno-error -Wno-implicit-function-declaration"
-    export CXXFLAGS="$(echo $LDFLAGS | sed 's/-fcanon-prefix-map=[^ ]*//g' | sed 's/-fcanon-prefix-map//g' | sed 's/-fmacro-prefix-map=[^ ]*//g' | sed 's/-fdebug-prefix-map=[^ ]*//g' | sed 's/-ffile-prefix-map=[^ ]*//g') -I${WORKSPACE}/poky/build/tmp-glibc/work/armv7a-neon-vfpv4-oe-linux-gnueabi/system-core/git/recipe-sysroot/usr/include/libunwindandroid -Wno-error -Wno-implicit-function-declaration"
-    export LDFLAGS="$(echo $LDFLAGS | sed 's/-fcanon-prefix-map=[^ ]*//g' | sed 's/-fcanon-prefix-map//g' | sed 's/-fmacro-prefix-map=[^ ]*//g' | sed 's/-fdebug-prefix-map=[^ ]*//g' | sed 's/-ffile-prefix-map=[^ ]*//g')"
+     export CFLAGS="${CFLAGS} -I${WORKSPACE}/poky/build/tmp-glibc/work/armv7a-neon-vfpv4-oe-linux-gnueabi/system-core/git/recipe-sysroot/usr/include/libunwindandroid -Wno-error -Wno-implicit-function-declaration"
+     export CXXFLAGS="${CXXFLAGS} -I${WORKSPACE}/poky/build/tmp-glibc/work/armv7a-neon-vfpv4-oe-linux-gnueabi/system-core/git/recipe-sysroot/usr/include/libunwindandroid -Wno-error -Wno-implicit-function-declaration"
 }
 
-DEPENDS += "virtual/kernel openssl glib-2.0 libselinux ext4-utils libcutils libbase libmincrypt libutils libunwindandroid"
+DEPENDS += "virtual/kernel openssl glib-2.0 libselinux ext4-utils libcutils libmincrypt libutils libbase libunwindandroid"
 DEPENDS:append_qcs605 = " libsync"
 DEPENDS:append_sdm845 = " libsync"
 

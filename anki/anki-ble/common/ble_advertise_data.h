@@ -1,3 +1,4 @@
+#include <cstdint>
 /**
  * File: ble_advertise_data.h
  *

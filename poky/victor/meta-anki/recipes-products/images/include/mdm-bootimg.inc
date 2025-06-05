@@ -29,6 +29,8 @@ EXTRA_IMAGE_FEATURES += "read-only-rootfs"
 
 TARGET_NUM = "${@('0' if d.getVar('DEV') == '1' else '1' if d.getVar('OSKR') == '1' else '9' if d.getVar('USER_BUILD') == '1' else '0')}"
 
+WHAT_OS_AM_I = "wire-os_wire_os"
+
 gen_buildprop:append() {
    mkdir -p ${IMAGE_ROOTFS}/cache
    BUILD_TIMESTAMP=`cat ${IMAGE_ROOTFS}/etc/version`
@@ -102,4 +104,6 @@ gen_buildprop:append() {
    echo "ro.build.version.incremental=${VERSION_CODE}" >> ${IMAGE_ROOTFS}/build.prop
 
    echo "ro.build.target=${TARGET_NUM}" >> ${IMAGE_ROOTFS}/build.prop
+
+   echo "ro.build.os.cfw.name=${WHAT_OS_AM_I}" >> ${IMAGE_ROOTFS}/build.prop
 }

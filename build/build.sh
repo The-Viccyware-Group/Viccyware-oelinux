@@ -113,23 +113,33 @@ rm -rf poky/build/tmp-glibc/deploy/images/apq8009-robot-robot-perf/apq8009-robot
 
 DIRPATH="$(pwd)"
 
+function cleanMsg() {
+	echo
+	echo -e "\e[1;32mCleaning some recipes...\e[0m"
+	echo
+}
+
+function buildMsg() {
+	echo
+        echo -e "\e[1;32mBuilding the OS...\e[0m"
+	echo
+}
+
+YOCTO_CLEAN_COMMAND="echo -e \"\e[1;32mCleaning some recipes...\e[0m\" && echo && clean-${BOT_TYPE}"
+YOCTO_BUILD_COMMAND="echo && echo -e \"\e[1;32mBuilding the OS...\e[0m\" && echo && build-${BOT_TYPE}"
+
+echo "Building a $BOT_TYPE OTA"
+export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
+
 if [[ $BOT_TYPE == "oskr" ]]; then
-	echo "Building an OSKR OTA"
         export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
-	YOCTO_BUILD_COMMAND="clean-oskr && build-oskr"
 	BOOT_MAKE_COMMAND="make oskrsign"
 elif [[ $BOT_TYPE == "prod" ]]; then
-	echo "Building a prod OTA"
         export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
-	YOCTO_BUILD_COMMAND="clean-prod && build-prod"
 	BOOT_MAKE_COMMAND="make prodsign"
 elif [[ $BOT_TYPE == "devcloudless" ]]; then
-        echo "Building a dev cloudless OTA"
-        YOCTO_BUILD_COMMAND="clean-dev-cloudless && build-dev-cloudless"
         BOOT_MAKE_COMMAND="make devsign"
 else
-        echo "Building a dev OTA"
-	YOCTO_BUILD_COMMAND="clean-dev && build-dev"
 	BOOT_MAKE_COMMAND="make devsign"
 fi
 
@@ -164,6 +174,7 @@ docker run -it \
     source build/conf/set_bb_env.sh && \
     export ANKI_BUILD_VERSION=$BUILD_INCREMENT && \
     export AUTO_UPDATE=${AUTO_UPDATE} && \
+    ${YOCTO_CLEAN_COMMAND} && \
     ${YOCTO_BUILD_COMMAND} && \
     cd ${DIRPATH}/ota && \
     rm -rf ../_build/*.img ../_build/*.stats ../_build/*.ini ../_build/*.enc && \

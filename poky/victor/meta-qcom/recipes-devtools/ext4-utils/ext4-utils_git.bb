@@ -1,4 +1,4 @@
-inherit autotools pkgconfig
+inherit autotools pkgconfig gccseven
 
 DESCRIPTION = "EXT4 UTILS"
 HOMEPAGE = "http://developer.android.com/"

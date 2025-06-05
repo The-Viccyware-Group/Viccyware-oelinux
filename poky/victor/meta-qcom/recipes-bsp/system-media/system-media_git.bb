@@ -1,4 +1,4 @@
-inherit autotools pkgconfig
+inherit autotools pkgconfig gccseven
 
 DESCRIPTION = "system media headers"
 HOMEPAGE = "http://developer.android.com/"
@@ -9,6 +9,8 @@ ${LICENSE};md5=89aea4e17d99a7cacdbeed46a0096b10"
 DEPENDS = "system-core tinyalsa expat"
 
 PROVIDES += " audio-route audio-utils audio-effects"
+
+CFLAGS += "-Wno-error -Wno-implicit-function-declaration -Wno-strict-prototypes"
 
 FILESPATH =+ "${WORKSPACE}/frameworks/:"
 SRC_URI   = "file://system/media/"

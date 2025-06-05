@@ -17,6 +17,10 @@ SRC_URI   = "file://libcutils"
 
 S = "${WORKDIR}/libcutils"
 
+# mdsprpcd complains about execstack
+CFLAGS += "-O2 -fPIC"
+LDFLAGS += "-Wl,-z,noexecstack"
+
 EXTRA_OECONF += " --with-core-includes=${WORKSPACE}/system/core/include"
 EXTRA_OECONF += " --with-host-os=${HOST_OS}"
 EXTRA_OECONF += " --disable-static"
