@@ -220,8 +220,8 @@ function display_fault_code() {
         if [ ! -f ${SHOWING_FILE} ]; then
             if [ -x /anki/bin/vic-faultCodeDisplay ]; then
               log "Display fault code ${FAULT_CODE}"
-              aplay /bin/xp-error.wav
               /anki/bin/vic-faultCodeDisplay ${DISPLAY_RESTART} ${FAULT_CODE}
+              [ ! -f /data/no-fault-sound ] && aplay /bin/xp-error.wav
               echo ${FAULT_CODE} > ${SHOWING_FILE}
             fi
         fi
