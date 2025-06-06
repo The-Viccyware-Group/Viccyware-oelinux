@@ -21,12 +21,6 @@ IMAGE_INSTALL += "${@bb.utils.contains('DISTRO_FEATURES','selinux','start-script
 IMAGE_INSTALL += "base-files"
 IMAGE_INSTALL += "base-passwd"
 
-#IMAGE_INSTALL += "binder"
-
-IMAGE_INSTALL += "${@bb.utils.contains('VARIANT','user','','coreutils',d)}"
-
-#IMAGE_INSTALL += "native-frameworks"
-
 IMAGE_INSTALL += "glib-2.0"
 
 IMAGE_INSTALL += "libnl"
@@ -34,7 +28,6 @@ IMAGE_INSTALL += "libcutils"
 IMAGE_INSTALL += "liblog"
 
 IMAGE_INSTALL += "libxml2"
-#IMAGE_INSTALL += "tinyalsa"
 
 IMAGE_INSTALL += "start-scripts-find-partitions"
 IMAGE_INSTALL += "start-scripts-firmware-links"
@@ -45,7 +38,6 @@ IMAGE_INSTALL += "system-core-usb"
 IMAGE_INSTALL += "system-core-post-boot"
 IMAGE_INSTALL += "system-conf"
 IMAGE_INSTALL += "system-prop"
-#IMAGE_INSTALL += "systemd-machine-units"
 IMAGE_INSTALL += "iw"
 IMAGE_INSTALL += "volatile-binds"
 
@@ -63,10 +55,6 @@ IMAGE_INSTALL += "nettle"
 IMAGE_INSTALL += "gnutls"
 IMAGE_INSTALL += "curl"
 IMAGE_INSTALL += "libwebp"
-
-# ss-mgr
-#IMAGE_INSTALL += "init-mss"
-#IMAGE_INSTALL += "reboot-daemon"
 
 # wlan
 IMAGE_INSTALL += "wcnss"

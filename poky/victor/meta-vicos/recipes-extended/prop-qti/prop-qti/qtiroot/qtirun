@@ -1,5 +1,0 @@
-#!/bin/bash
-
-QTIPATH=/usr/qtiroot
-
-chroot ${QTIPATH} "$@"

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set +e
+
+if [[ $1 == "" ]]; then
+  echo "Provide a timezone."
+  exit 1
+fi
+
+mkdir -p /data/etc
+cp "/usr/share/zoneinfo/$1" /data/etc/localtime
+echo "$1" > /data/etc/timezone
+umount /etc/localtime
+umount /etc/timezone
+mount --bind /data/etc/localtime /etc/localtime
+mount --bind /data/etc/timezone  /etc/timezone
+
+exit 0

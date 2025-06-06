@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [[ ! -d /dev/block/bootdevice/by-name ]]; then
+    mkdir -p /dev/block/bootdevice/by-name
+    ln -s /dev/disk/by-partlabel/* /dev/block/bootdevice/by-name/
+fi
