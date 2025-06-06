@@ -28,8 +28,8 @@ function ctrl_c() {
     exit 1
 }
 
-BASE_URL=`egrep UPDATE_ENGINE_BASE_URL= /anki/etc/update-engine.env | awk -F= '{print $NF;}'`
-BASE_URL_LATEST=`egrep UPDATE_ENGINE_BASE_URL_LATEST /anki/etc/update-engine.env | awk -F= '{print $NF;}'`
+BASE_URL=`grep UPDATE_ENGINE_BASE_URL= /anki/etc/update-engine.env | awk -F= '{print $NF;}'`
+BASE_URL_LATEST=`grep UPDATE_ENGINE_BASE_URL_LATEST /anki/etc/update-engine.env | awk -F= '{print $NF;}'`
 if [ -z "${BASE_URL_LATEST}" ]; then
     BASE_URL_LATEST="${BASE_URL}"
 fi
@@ -81,7 +81,7 @@ UPDATE_VERSION=""
 while [[ ! -f /run/update-engine/done ]] ; do
     sleep 3
     if [ -z "${UPDATE_VERSION}" -a -f /run/update-engine/manifest.ini ]; then
-	UPDATE_VERSION=`egrep update_version /run/update-engine/manifest.ini | awk -F= '{print $NF;}'`
+	UPDATE_VERSION=`grep update_version /run/update-engine/manifest.ini | awk -F= '{print $NF;}'`
     fi
     if [ -f /run/update-engine/progress -a -f /run/update-engine/expected-size ] ; then
 	PROGRESS=`cat /run/update-engine/progress`

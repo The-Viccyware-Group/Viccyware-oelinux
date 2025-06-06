@@ -1,0 +1,10 @@
+[Unit]
+SourcePath=/etc/initscripts/partition-links
+Description=partition symlinks for by-name
+
+[Service]
+Type=oneshot
+ExecStart=/etc/initscripts/partition-links
+
+[Install]
+WantedBy=multi-user.target

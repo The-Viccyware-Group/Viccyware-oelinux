@@ -37,7 +37,7 @@ UID_CLOUD     = "${GID_CLOUD}"
 
 do_clean:append() {
     s = d.getVar('S')
-    os.system('cd "%s" && rm -rf build/vic-cloud build/vic-gateway' % s)
+    os.system('cd "%s" && rm -rf build/vic-cloud build/vic-gateway build/*.upx' % s)
 }
 
 run_victor() {
