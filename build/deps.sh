@@ -1,5 +1,7 @@
 #!/bin/bash
 
+VICOS_SDK_VERSION="5.2.1-r06"
+
 set -e
 
 if [[ ! -d poky ]]; then
@@ -33,15 +35,20 @@ fi
 
 cd "$OD"
 
-if [[ ! -d anki-deps/vicos-sdk/dist/4.0.0-r05/prebuilt ]]; then
+if [[ -d anki-deps/vicos-sdk/dist/4.0.0-r05/prebuilt ]]; then
+	echo "deleting old vicos-sdk clang toolchain..."
+	sudo rm -rf anki-deps/vicos-sdk/dist/4.0.0-r05
+fi
+
+if [[ ! -d anki-deps/vicos-sdk/dist/${VICOS_SDK_VERSION}/prebuilt ]]; then
 	if [[ -d anki-deps ]]; then
 		sudo rm -rf anki-deps
 	fi
-	mkdir -p anki-deps/vicos-sdk/dist/4.0.0-r05
-	cd anki-deps/vicos-sdk/dist/4.0.0-r05
-	wget -q --show-progress https://github.com/os-vector/wire-os-externals/releases/download/4.0.0-r05/vicos-sdk_4.0.0-r05_x86_64-arm-oe-linux-gnueabi.tar.gz
-	tar -zxvf vicos-sdk_4.0.0-r05_x86_64-arm-oe-linux-gnueabi.tar.gz
-	rm -f vicos-sdk_4.0.0-r05_x86_64-arm-oe-linux-gnueabi.tar.gz
+	mkdir -p anki-deps/vicos-sdk/dist/${VICOS_SDK_VERSION}
+	cd anki-deps/vicos-sdk/dist/${VICOS_SDK_VERSION}
+	wget -q --show-progress https://github.com/os-vector/wire-os-externals/releases/download/${VICOS_SDK_VERSION}/vicos-sdk_${VICOS_SDK_VERSION}_amd64-linux.tar.gz
+	tar -zxvf vicos-sdk_${VICOS_SDK_VERSION}_amd64-linux.tar.gz
+	rm -f vicos-sdk_${VICOS_SDK_VERSION}_amd64-linux.tar.gz
 fi
 
 cd "$OD"

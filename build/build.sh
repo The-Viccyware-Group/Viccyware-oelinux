@@ -17,6 +17,11 @@ function usage() {
     exit 1
 }
 
+if [[ ! "$(uname -a)" == *"Linux"* ]] || [[ ! "$(uname -a)" == *"x86_64"* ]]; then
+	echo "This is not x86_64/amd64 Linux. Exiting."
+	exit 1
+fi
+
 function check_sign_prod() {
     if openssl rsa -in ota/qtipri.encrypted.key -passin pass:"$BOOT_PASSWORD" -noout 2>/dev/null; then
         echo "Prod boot image key password confirmed to be correct!"
@@ -148,28 +153,30 @@ if [[ $DO_SIGN == 1 ]]; then
     export DO_SIGN=$DO_SIGN
 fi
 
-if [[ ! -z $(docker images -q vic-yocto-builder-2) ]]; then
-	echo "Old docker builder detected. Purging..."
-	docker ps -a --filter "ancestor=vic-yocto-builder-2" -q | xargs -r docker rm -f
+if [[ ! -z $(docker images -q vic-yocto-builder-4) ]]; then
+	echo "Purging old docker containers... this might take a while"
+	docker ps -a --filter "ancestor=vic-yocto-builder-4" -q | xargs -r docker rm -f
+	docker rmi -f $(docker images --filter "reference=vic-yocto-builder-4*" --format '{{.ID}}')
 	echo
 	echo -e "\033[5m\033[1m\033[31mOld Docker builder detected on system. If you have built victor or wire-os many times, it is recommended you run:\033[0m"
 	echo
 	echo -e "\033[1m\033[36mdocker system prune -a --volumes\033[0m"
 	echo
-	echo -e "\033[32mContinuing in 5 seconds... (you will only see this message once)\033[0m"
-	sleep 5
+	echo -e "\033[32mPrevious versions of wire-os did not include a --rm flag in the docker run command. This means you probably have wasted space which can be cleared out with the above command.\033[0m"
+	echo -e "\033[32mContinuing in 10 seconds...\033[0m"
+	sleep 10
 fi
 
-if [[ -z $(docker images -q vic-yocto-builder-4) ]]; then
-	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t vic-yocto-builder-4 build/
+if [[ -z $(docker images -q vic-yocto-builder-5) ]]; then
+	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t vic-yocto-builder-5 build/
 else
-	echo "Reusing vic-yocto-builder-4"
+	echo "Reusing vic-yocto-builder-5"
 fi
-docker run -it \
+docker run -it --rm \
     -v $(pwd)/anki-deps:/home/$USER/.anki \
     -v $(pwd):$(pwd) \
     -v $(pwd)/build/cache:/home/$USER/.ccache \
-    vic-yocto-builder-4 bash -c \
+    vic-yocto-builder-5 bash -c \
     "cd $(pwd)/poky && \
     source build/conf/set_bb_env.sh && \
     export ANKI_BUILD_VERSION=$BUILD_INCREMENT && \
