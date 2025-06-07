@@ -2,7 +2,7 @@
 
 The main repo for building Viccyware otas.
 
-This builds the OS, the /anki programs (`victor`), and creates a final OTA. This repo can be thought of as `wire-os-oelinux`.
+This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 
 ## Submodules
 
