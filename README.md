@@ -1,8 +1,6 @@
-# wire-os
+# Viccyware-oelinux
 
-The main repo for WireOS.
-
-WireOS serves as a nice, stable, and maintained base for Vector CFW.
+The main repo for building Viccyware otas.
 
 This builds the OS, the /anki programs (`victor`), and creates a final OTA. This repo can be thought of as `wire-os-oelinux`.
 
@@ -10,7 +8,7 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA. This
 
 - /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (walnascar)
 - /poky/meta-openembedded -> [openembedded/meta-openembedded](https://github.com/openembedded/meta-openembedded) (walnascar)
-- /anki/victor -> [wire-os-victor](https://github.com/os-vector/wire-os-victor) (main)
+- /anki/victor -> [Viccyware](https://github.com/Switch-modder/Viccyware) (Viccyware-tester)
 - /anki/wired -> [wired](https://github.com/os-vector/wired) (main)
 
 ## Update notes:
@@ -19,7 +17,6 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA. This
 - **05-24-2025**: `./build/clean.sh "connman wpa-supplicant fake-hwclock initscript-anki"`
 - **05-24-2025 again**: `./build/clean.sh "ethtool iptables-persistent"`
 - **06-02-2025**: `./build/clean.sh "system-core"`
-- **06-05-2025**: `./build/clean.sh "lvm2 libpam packagegroup-core-base-utils"`
 
 ## Build
 
@@ -40,8 +37,8 @@ sudo chmod 660 /var/run/docker.sock
 3. Clone and build:
 
 ```
-git clone https://github.com/os-vector/wire-os --recurse-submodules
-cd wire-os
+git clone --recursive https://github.com/The-Viccyware-Group/Viccyware-oelinux/ 
+cd Viccyware-oelinux
 ./build/build.sh -bt <dev/oskr> -bp <boot-passwd> -v <build-increment>
 # boot password not required for dev
 # example: ./build/build.sh -bt dev -v 1
@@ -49,13 +46,7 @@ cd wire-os
 
 ### Where is my OTA?
 
-`./_build/3.0.1.1.ota`
-
-##  Donate
-
-If you want to :P
-
-[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/kercre123)
+`./_build/Viccyware-0.5.(x).ota`
 
 ## Differences compared to normal Vector FW
 
@@ -74,7 +65,9 @@ If you want to :P
     -   Custom wake words in :8080 webserver!
 -   `htop` and `rsync` are embedded
 -   Python 3.13 rather than Python 2
--   Global SSH key: ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
+-   Fixed fault code handler
+    - No more 980 or 981 after crash on Vector 2.0
+-   Global SSH key ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
 
 ## Helpful scripts
 
@@ -83,17 +76,12 @@ If you want to :P
 -	`ddn <on/off>`
 	-	Turns on/off DevDoNothing, which makes the bot stand still until shaken.
 
-## Proprietary software notes
 
--	This repo contains lots of proprietary Qualcomm code and prebuilt software.
--	After a stupid amount of work, I have most HAL programs compiling under GCC 7.5.0 in Yocto.
--	This is only for audio and BLE. For camera, I decided to just copy in those binaries (mm-camera recipe).
--	If you want to change the code in mm-anki-camera or mm-qcamera-daemon for whatever reason, you'll have to clone vicos-oelinux-nosign, change the code there, compile it in there, then pack the built binaries into a --bzip2 tar and put it into prebuilt_HY11/mm-camera.
-	-	Why am I not having Yocto build them? This is because I would have to add ~2GB of code to the repo, I would have to figure out how to get Qualcomm's ancient "SDLLVM" compiler working, and because the binaries are stable enough.
+## Viccyware was made possible though the work of some amazing community members
 
-## How this upgrade was done
-
--	Much work upgrading Yocto recipes.
--	Most of the software is compiling with Yocto's GCC 14 or the Clang 18.1.8 toolchain I built, but there are some exceptions which are compiled with a GCC 7.5.0 compiler.
--	These exceptions include linux-msm (kernel), all the Qualcomm HAL programs, and ALSA (it didn't work right with the kernel when compiled with GCC 14).
--	Some recipes are still somewhat old - these include wpa_supplicant and connman (I had issues with SAE)
+- [Wire](https://github.com/kercre123)
+- [Yrekcaz](https://github.com/Yrekcaz)
+- [Froggitti](https://github.com/froggitti)
+- [ThommoMC](https://github.com/ThommoMC)
+- [Gaming Time](https://github.com/gamingtimevr)
+- [Raj-jyot Deol / Switch_modder](https://github.com/Switch-modder)
