@@ -8,7 +8,7 @@ set -e
 # Hidden env vars:
 # 1. I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE: set to 1 if you want to inhibit the -au interaction
 
-CREATOR="froggitti"
+CREATOR="The Viccyware Group"
 
 function usage() {
     echo "$1"
@@ -53,7 +53,7 @@ function check_sign_ota() {
 
 function are_you_wire() {
 	if [[ "${I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE}" != "1" ]]; then
-		echo "Are you $CREATOR?"
+		echo "Are you part of the $CREATOR?"
 		read -p "(y/n): " yn
 		case $yn in
 			[Yy]* ) echo "Cool. Wire is stupid btw!" ;;
