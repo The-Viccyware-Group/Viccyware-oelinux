@@ -6,12 +6,12 @@
 	path = poky/meta-openembedded
 	url = https://github.com/openembedded/meta-openembedded
 	branch = walnascar
-[submodule "anki/victor"]
-	path = anki/victor
-	url = https://github.com/Switch-modder/Viccyware
 [submodule "anki/wired"]
 	path = anki/wired
         url = https://github.com/The-Viccyware-Group/wired-viccyware
 [submodule "anki/vic-cloudless"]
 	path = anki/vic-cloudless
 	url = https://github.com/kercre123/vic-cloudless
+[submodule "anki/victor"]
+	path = anki/victor
+	url = https://github.com/The-Viccyware-Group/Viccyware
