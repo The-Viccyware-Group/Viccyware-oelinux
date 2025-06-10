@@ -2,6 +2,9 @@
 
 set -e
 
+# Enable more verbose output
+set -x
+
 # Hidden arguments;
 # 1. -au: enable auto-updates
 
@@ -172,7 +175,7 @@ if [[ -z $(docker images -q vic-yocto-builder-5) ]]; then
 else
 	echo "Reusing vic-yocto-builder-5"
 fi
-docker run -it --rm \
+docker run -i --rm \
     -v $(pwd)/anki-deps:/home/$USER/.anki \
     -v $(pwd):$(pwd) \
     -v $(pwd)/build/cache:/home/$USER/.ccache \
