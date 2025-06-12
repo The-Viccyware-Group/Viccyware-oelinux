@@ -37,6 +37,7 @@ IMAGE_INSTALL += "rebooter"
 IMAGE_INSTALL += "${@oe.utils.conditional('USER_BUILD', '1', '', 'update-os', d)}"
 IMAGE_INSTALL += "anki-update-engine"
 IMAGE_INSTALL += "fault-code"
+IMAGE_INSTALL += "faultcodesound"
 
 IMAGE_INSTALL += "python3-netclient"
 IMAGE_INSTALL += "python3-compression"

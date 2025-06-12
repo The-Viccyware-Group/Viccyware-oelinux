@@ -2,6 +2,9 @@
 
 set -e
 
+# Enable more verbose output
+set -x
+
 # Hidden arguments;
 # 1. -au: enable auto-updates
 
@@ -110,7 +113,6 @@ fi
 echo "All checks passed. Building."
 
 mkdir -p build/cache
-mkdir -p build/gocache
 
 echo "Getting deps (if needed)..."
 ./build/deps.sh
@@ -173,18 +175,16 @@ if [[ -z $(docker images -q vic-yocto-builder-5) ]]; then
 else
 	echo "Reusing vic-yocto-builder-5"
 fi
-docker run -it --rm \
+docker run -i --rm \
     -v $(pwd)/anki-deps:/home/$USER/.anki \
     -v $(pwd):$(pwd) \
     -v $(pwd)/build/cache:/home/$USER/.ccache \
-    -v $(pwd)/build/gocache:/home/$USER/go \
     vic-yocto-builder-5 bash -c \
     "cd $(pwd)/poky && \
     source build/conf/set_bb_env.sh && \
     export ANKI_BUILD_VERSION=$BUILD_INCREMENT && \
     export AUTO_UPDATE=${AUTO_UPDATE} && \
     ${YOCTO_CLEAN_COMMAND} && \
-    sleep 2 && \
     ${YOCTO_BUILD_COMMAND} && \
     cd ${DIRPATH}/ota && \
     rm -rf ../_build/*.img ../_build/*.stats ../_build/*.ini ../_build/*.enc && \
