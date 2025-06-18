@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# idk why, but connman doesn't want to automatically enable wifi now that
+# we have upgraded our wlan module
+
+set +e
+
+max_attempts=15
+
+for ((i=1; i<=max_attempts; i++)); do
+  echo attempt 1
+  CATTEMPT="$(connmanctl enable wifi 2>&1)"
+  if [[ ! "${CATTEMPT}" == *"Error wifi"* ]] && [[ ! "${CATTEMPT}" == *"wifi is not"* ]]; then
+    break
+  fi
+  sleep 1
+done
+
