@@ -2,6 +2,9 @@
 
 set -e
 
+# Enable more verbose output
+set -x
+
 # Hidden arguments;
 # 1. -au: enable auto-updates
 
@@ -110,7 +113,6 @@ fi
 echo "All checks passed. Building."
 
 mkdir -p build/cache
-mkdir -p build/gocache
 
 echo "Getting deps (if needed)..."
 ./build/deps.sh
@@ -137,15 +139,12 @@ YOCTO_BUILD_COMMAND="echo && echo -e \"\e[1;32mBuilding the OS...\e[0m\" && echo
 echo "Building a $BOT_TYPE OTA"
 export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
 
-ANKIDEV=1
-
 if [[ $BOT_TYPE == "oskr" ]]; then
         export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
 	BOOT_MAKE_COMMAND="make oskrsign"
 elif [[ $BOT_TYPE == "prod" ]]; then
         export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
 	BOOT_MAKE_COMMAND="make prodsign"
-	ANKIDEV=0
 elif [[ $BOT_TYPE == "devcloudless" ]]; then
         BOOT_MAKE_COMMAND="make devsign"
 else
@@ -176,18 +175,16 @@ if [[ -z $(docker images -q vic-yocto-builder-5) ]]; then
 else
 	echo "Reusing vic-yocto-builder-5"
 fi
-docker run -it --rm \
+docker run -i --rm \
     -v $(pwd)/anki-deps:/home/$USER/.anki \
     -v $(pwd):$(pwd) \
     -v $(pwd)/build/cache:/home/$USER/.ccache \
-    -v $(pwd)/build/gocache:/home/$USER/go \
     vic-yocto-builder-5 bash -c \
     "cd $(pwd)/poky && \
     source build/conf/set_bb_env.sh && \
     export ANKI_BUILD_VERSION=$BUILD_INCREMENT && \
     export AUTO_UPDATE=${AUTO_UPDATE} && \
     ${YOCTO_CLEAN_COMMAND} && \
-    sleep 2 && \
     ${YOCTO_BUILD_COMMAND} && \
     cd ${DIRPATH}/ota && \
     rm -rf ../_build/*.img ../_build/*.stats ../_build/*.ini ../_build/*.enc && \
@@ -195,7 +192,7 @@ docker run -it --rm \
     export OTA_MANIFEST_SIGNING_KEY=${OTA_SIGNING_KEY_PASSWORD} && \
     export BOOT_IMAGE_SIGNING_PASSWORD=${BOOT_PASSWORD} && \
     ${BOOT_MAKE_COMMAND} && \
-    ANKIDEV=${ANKIDEV} make"
+    make"
 
 echo
 echo -e "\033[1;32mCompleted successfully. Output is in ./_build.\033[0m"
