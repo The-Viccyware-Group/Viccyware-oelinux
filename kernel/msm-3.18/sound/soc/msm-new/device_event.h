@@ -1,4 +1,4 @@
-/* Copyright (c) 2017, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2014, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -8,29 +8,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
  */
 
-#ifndef BGRSB_H
-#define BGRSB_H
+#ifndef __DEVICE_EVENT_H
+#define __DEVICE_EVENT_H
 
-struct event {
-	uint8_t sub_id;
-	int16_t evnt_data;
-	uint32_t evnt_tm;
-};
+#define QC_AUDIO_EXTERNAL_SPK_1_EVENT "qc_ext_spk_1"
+#define QC_AUDIO_EXTERNAL_SPK_2_EVENT "qc_ext_spk_2"
+#define QC_AUDIO_EXTERNAL_MIC_EVENT "qc_ext_mic"
 
-
-struct bg_glink_chnl {
-	char *chnl_name;
-	char *chnl_edge;
-	char *chnl_trnsprt;
-};
-
-/**
- * bgrsb_send_input() - send the recived input to input framework
- * @evnt: pointer to the event structure
- */
-int bgrsb_send_input(struct event *evnt);
-
-#endif /* BGCOM_H */
+#endif /* __DEVICE_EVENT_H */

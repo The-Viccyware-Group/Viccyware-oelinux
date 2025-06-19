@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2018, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2014-2017, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -29,7 +29,6 @@
 #include <asm/ioctls.h>
 #include <linux/mm.h>
 #include <linux/of.h>
-#include <linux/vmalloc.h>
 #include <linux/ipc_logging.h>
 #include <linux/termios.h>
 
@@ -67,9 +66,9 @@
 #define map_from_smd_trans_signal(sigs) \
 	do { \
 		if (sigs & SMD_DTR_SIG) \
-			sigs |= TIOCM_DSR; \
+			sigs |= TIOCM_DTR; \
 		if (sigs & SMD_CTS_SIG) \
-			sigs |= TIOCM_CTS; \
+			sigs |= TIOCM_RTS; \
 		if (sigs & SMD_CD_SIG) \
 			sigs |= TIOCM_CD; \
 		if (sigs & SMD_RI_SIG) \
@@ -399,8 +398,8 @@ void glink_pkt_notify_tx_done(void *handle, const void *priv,
 {
 	GLINK_PKT_INFO("%s(): priv[%p] pkt_priv[%p] ptr[%p]\n",
 					__func__, priv, pkt_priv, ptr);
-	/* Free Tx buffer allocated in glink_pkt_write */
-	kvfree(ptr);
+/* Free Tx buffer allocated in glink_pkt_write */
+	kfree(ptr);
 }
 
 /**
@@ -523,21 +522,13 @@ static void glink_pkt_queue_rx_intent_worker(struct work_struct *work)
 				struct queue_rx_intent_work, work);
 	struct glink_pkt_dev *devp = work_item->devp;
 
-	if (!devp) {
-		GLINK_PKT_ERR("%s: Invalid device\n", __func__);
-		kfree(work_item);
-		return;
-	}
-	mutex_lock(&devp->ch_lock);
-	if (!devp->handle) {
+	if (!devp || !devp->handle) {
 		GLINK_PKT_ERR("%s: Invalid device Handle\n", __func__);
-		mutex_unlock(&devp->ch_lock);
 		kfree(work_item);
 		return;
 	}
 
 	ret = glink_queue_rx_intent(devp->handle, devp, work_item->intent_size);
-	mutex_unlock(&devp->ch_lock);
 	GLINK_PKT_INFO("%s: Triggered with size[%zu] ret[%d]\n",
 				__func__, work_item->intent_size, ret);
 	if (ret)
@@ -775,10 +766,8 @@ ssize_t glink_pkt_write(struct file *file,
 		__func__, devp->i, count);
 	data = kzalloc(count, GFP_KERNEL);
 	if (!data) {
-		if (!strcmp(devp->open_cfg.edge, "bg"))
-			data = vzalloc(count);
-		if (!data)
-			return -ENOMEM;
+		GLINK_PKT_ERR("%s buffer allocation failed\n", __func__);
+		return -ENOMEM;
 	}
 
 	ret = copy_from_user(data, buf, count);
@@ -786,14 +775,14 @@ ssize_t glink_pkt_write(struct file *file,
 		GLINK_PKT_ERR(
 		"%s copy_from_user failed ret[%d] on dev id:%d size %zu\n",
 		 __func__, ret, devp->i, count);
-		kvfree(data);
+		kfree(data);
 		return -EFAULT;
 	}
 
 	ret = glink_tx(devp->handle, data, data, count, GLINK_TX_REQ_INTENT);
 	if (ret) {
 		GLINK_PKT_ERR("%s glink_tx failed ret[%d]\n", __func__, ret);
-		kvfree(data);
+		kfree(data);
 		return ret;
 	}
 
@@ -1087,27 +1076,6 @@ error:
 }
 
 /**
- * pop_rx_pkt() - return first pkt from rx pkt_list
- * devp:	pointer to G-Link packet device.
- *
- * This function return first item from rx pkt_list and NULL if list is empty.
- */
-static struct glink_rx_pkt *pop_rx_pkt(struct glink_pkt_dev *devp)
-{
-	unsigned long flags;
-	struct glink_rx_pkt *pkt = NULL;
-
-	spin_lock_irqsave(&devp->pkt_list_lock, flags);
-	if (!list_empty(&devp->pkt_list)) {
-		pkt = list_first_entry(&devp->pkt_list,
-				struct glink_rx_pkt, list);
-		list_del(&pkt->list);
-	}
-	spin_unlock_irqrestore(&devp->pkt_list_lock, flags);
-	return pkt;
-}
-
-/**
  * glink_pkt_release() - release operation on glink_pkt device
  * inode:	Pointer to the inode structure.
  * file:	Pointer to the file structure.
@@ -1121,7 +1089,6 @@ int glink_pkt_release(struct inode *inode, struct file *file)
 	int ret = 0;
 	struct glink_pkt_dev *devp = file->private_data;
 	unsigned long flags;
-	struct glink_rx_pkt *pkt;
 	GLINK_PKT_INFO("%s() on dev id:%d by [%s] ref_cnt[%d]\n",
 			__func__, devp->i, current->comm, devp->ref_cnt);
 
@@ -1130,14 +1097,9 @@ int glink_pkt_release(struct inode *inode, struct file *file)
 		devp->ref_cnt--;
 
 	if (devp->handle && devp->ref_cnt == 0) {
-		while ((pkt = pop_rx_pkt(devp))) {
-			glink_rx_done(devp->handle, pkt->data, false);
-			kfree(pkt);
-		}
 		wake_up(&devp->ch_read_wait_queue);
 		wake_up_interruptible(&devp->ch_opened_wait_queue);
 		ret = glink_close(devp->handle);
-		devp->handle = NULL;
 		if (ret)  {
 			GLINK_PKT_ERR("%s: close failed ret[%d]\n",
 						__func__, ret);

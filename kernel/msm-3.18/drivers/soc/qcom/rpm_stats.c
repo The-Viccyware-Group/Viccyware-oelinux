@@ -1,5 +1,4 @@
-/* Copyright (c) 2011-2015, 2017-2018, The Linux Foundation.
- * All rights reserved.
+/* Copyright (c) 2011-2015, 2017, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -431,7 +430,7 @@ static ssize_t rpmstats_show(struct kobject *kobj,
 					prvdata);
 	}
 
-	ret = snprintf(buf, prvdata->len, "%s", prvdata->buf);
+	ret = snprintf(buf, prvdata->len, prvdata->buf);
 	iounmap(prvdata->reg_base);
 ioremap_fail:
 	kfree(prvdata);
