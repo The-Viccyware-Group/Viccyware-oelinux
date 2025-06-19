@@ -3448,8 +3448,13 @@ static int netif_rx_internal(struct sk_buff *skb)
 
 	trace_netif_rx(skb);
 #ifdef CONFIG_RPS
+<<<<<<< HEAD
 	//WARN_ONCE(skb_cloned(skb), "Cloned packet from dev %s\n",
 	//	  skb->dev->name);
+=======
+	WARN_ONCE(skb_cloned(skb), "Cloned packet from dev %s\n",
+		  skb->dev->name);
+>>>>>>> 255921fbb (everything except for camera works)
 
 	if (static_key_false(&rps_needed)) {
 		struct rps_dev_flow voidflow, *rflow = &voidflow;
