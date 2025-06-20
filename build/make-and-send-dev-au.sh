@@ -25,9 +25,9 @@ scp -v -i "$SERVER_KEY_PATH" "_build/Viccyware-0.5.0.${INCREMENT}oskr.ota" root@
 
 I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE=1 ./build/build.sh -bt prod -s -op alike-essay-added-spumoni-lotion -bp require-radiolog-sprinkle-slither-genetics -v "$INCREMENT" -au
 
-scp -v -i "$SERVER_KEY_PATH" "_build/Viccyware-0.5.0.${INCREMENT}d.ota" root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/dev/0.5.0."${INCREMENT}".ota
-
 echo "OSKR build already copied, copying dev and prod builds to the server now..."
+
+scp -v -i "$SERVER_KEY_PATH" "_build/Viccyware-0.5.0.${INCREMENT}d.ota" "root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/dev/0.5.0.${INCREMENT}".ota
 
 # commented out cause prod builds are building with the "oskr" extension, so we need to SCP the oskr build to the server as soon as its done building
 #scp -i "$SERVER_KEY_PATH" "_build/Viccyware-0.5.0.${INCREMENT}oskr.ota" root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/oskr/0.5.0."${INCREMENT}".ota
