@@ -17,13 +17,13 @@ I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE=1 ./build/build.sh -bt p
 
 scp -v -i "$SERVER_KEY_PATH" "_build/Viccyware-0.5.0.${INCREMENT}d.ota" root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/dev/0.5.0."${INCREMENT}".ota
 
-echo OSKR build already copied, copying dev and prod builds to the server now...
+echo "OSKR build already copied, copying dev and prod builds to the server now..."
 
 # commented out cause prod builds are building with the "oskr" extension, so we need to SCP the oskr build to the server as soon as its done building
 #scp -i "$SERVER_KEY_PATH" "_build/Viccyware-0.5.0.${INCREMENT}oskr.ota" root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/oskr/0.5.0."${INCREMENT}".ota
 
 # this is a prod build
-scp -v -i "$SERVER_KEY_PATH" "_build/Viccyware-0.5.0.${INCREMENT}oskr.ota" root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/prod/0.5.0."${INCREMENT}".ota
+scp -v -i "$SERVER_KEY_PATH" "_build/Viccyware-0.5.0.${INCREMENT}oskr.ota" "root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/prod/0.5.0."${INCREMENT}".ota
 
 # leave these commented unless we want to start copying otas to a never-changing URL
 #scp -i ~/id_rsa_ROOT_COZMOSERVER "_build/Viccyware-0.5.0.${INCREMENT}d.ota" root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/latest/dev.ota
