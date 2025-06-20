@@ -2,6 +2,16 @@
 
 clear
 
+echo pulling latest dev-cdn 
+
+cd anki/victor
+
+git checkout -b frog/prod-test/cdn-dev
+
+git pull origin frog/prod-test/cdn-dev
+
+cd ../../
+
 read -p "enter build increment: " inc
 export INCREMENT="$inc"
 
@@ -23,7 +33,7 @@ echo "OSKR build already copied, copying dev and prod builds to the server now..
 #scp -i "$SERVER_KEY_PATH" "_build/Viccyware-0.5.0.${INCREMENT}oskr.ota" root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/oskr/0.5.0."${INCREMENT}".ota
 
 # this is a prod build
-scp -v -i "$SERVER_KEY_PATH" "_build/Viccyware-0.5.0.${INCREMENT}oskr.ota" "root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/prod/0.5.0."${INCREMENT}".ota
+scp -v -i "$SERVER_KEY_PATH" "_build/Viccyware-0.5.0.${INCREMENT}oskr.ota" "root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/prod/0.5.0.${INCREMENT}".ota
 
 # leave these commented unless we want to start copying otas to a never-changing URL
 #scp -i ~/id_rsa_ROOT_COZMOSERVER "_build/Viccyware-0.5.0.${INCREMENT}d.ota" root@froggitti.xyz:/home/cozmo/Desktop/all_servers/Viccyware-ota-server-dev/vicw-dev/otas/full/latest/dev.ota
