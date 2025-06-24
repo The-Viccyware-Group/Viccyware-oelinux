@@ -124,6 +124,7 @@ function build-8009-robot-user-image() {
   export DISTRO=msm-perf
   export VARIANT=perf
   export PRODUCT=robot
+  export PROD=1
   cdbitbake machine-robot-image
 }
 

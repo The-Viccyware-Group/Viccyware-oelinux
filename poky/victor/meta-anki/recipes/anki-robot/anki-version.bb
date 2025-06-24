@@ -39,6 +39,9 @@ do_install:append () {
 	elif [[ ${ANKI_RESOURCE_ESCAPEPOD} == "1" ]]; then
             # set to "oskr" for oskr builds
 	    ANKI_BUILD_TYPE="epd"
+        elif [[ ${PROD} = "1" ]]; then
+            # set to nothing for prod builds
+            ANKI_BUILD_TYPE=""
 	else
             # set to "d" for dev builds
             ANKI_BUILD_TYPE="d"
