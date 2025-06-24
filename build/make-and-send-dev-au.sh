@@ -6,9 +6,9 @@ echo pulling latest dev-cdn
 
 cd anki/victor
 
-git checkout -b frog/prod-test/cdn-dev
+git checkout -b frog/cdn-dev
 
-git pull origin frog/prod-test/cdn-dev
+git pull origin frog/cdn-dev
 
 cd ../../
 
