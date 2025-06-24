@@ -84,7 +84,7 @@ example for searching: vmesg -t -i "tflite\|gpu"
 example for whole log: vmesg -c
 ```
 
-## How this upgrade was done (all wire)
+## Proprietary software notes
 
 -	This repo contains lots of proprietary Qualcomm code and prebuilt software.
 -	After a stupid amount of work, I have most HAL programs compiling with Yocto's GCC.
@@ -92,6 +92,9 @@ example for whole log: vmesg -c
 -	If you want to change the code in mm-anki-camera or mm-qcamera-daemon for whatever reason, you'll have to clone vicos-oelinux-nosign, change the code there, compile it in there, then pack the built binaries into a --bzip2 tar and put it into prebuilt_HY11/mm-camera.
 	-	Why am I not having Yocto build them? This is because I would have to add ~2GB of code to the repo, I would have to figure out how to get Qualcomm's ancient "SDLLVM" compiler working, and because the binaries are stable enough.
 	-	UPDATE: some BLE binaries are being copied in now, too. explained later
+
+## How this upgrade was done (all wire)
+
 -	Much work upgrading Yocto recipes.
 -	All of the software is compiling with Yocto's GCC 14 or the Clang 18.1.8 vicos-sdk toolchain, with a couple of tiny exceptions.
 -	These exceptions include mm-anki-camera, mm-qcamera-daemon, ankibluetoothd, and hci_qcomm_init. They are able to compile under GCC 14, but there's a very low level issue which I haven't been able to figure out as of yet. I am copying prebuilt ones in for now.
