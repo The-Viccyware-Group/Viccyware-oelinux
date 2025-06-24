@@ -124,6 +124,7 @@ function build-8009-robot-user-image() {
   export DISTRO=msm-perf
   export VARIANT=perf
   export PRODUCT=robot
+  export PROD=1
   cdbitbake machine-robot-image
 }
 
@@ -219,7 +220,7 @@ function build-prod() {
 }
 
 # cleared every time
-cleanList=(victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf extra-conf vic-engine update-os update-engine wireutils wlan-opensource wcnss base-passwd mm-camera initscript-anki rebooter adreno)
+cleanList=(victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf extra-conf vic-engine update-os update-engine wireutils wlan-opensource wcnss base-passwd mm-camera initscript-anki rebooter adreno adsprpc)
 
 function clean-oskr() {
   unset_bb_env
