@@ -13,15 +13,7 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 
 ## Update notes:
 
-- **05-21-2025**: you might want to run `./build/clean.sh "connman wpa-supplicant base-files systemd tzdata alsa-lib alsa-tools alsa-utils"` before building again
-- **05-24-2025**: `./build/clean.sh "connman wpa-supplicant fake-hwclock initscript-anki"`
-- **05-24-2025 again**: `./build/clean.sh "ethtool iptables-persistent"`
-- **06-02-2025**: `./build/clean.sh "system-core"`
-- **06-05-2025**: `./build/clean.sh "lvm2 libpam packagegroup-core-base-utils"`
-- **06-08-2025**: `./build/clean.sh "systemd packagegroup-core-boot"`
-- **06-10-2025**: `./build/clean.sh "system-core"`
-- **06-17-2025**: `./build/clean.sh "connman wpa-supplicant"`
-- **06-19-2025**: **PLEASE DO THIS**: `./build/clean.sh "linux-msm rmtstorage"`
+- **06-23-25**: Full rebuild required, sorry. The build script will automatically do this.
 
 ## Build
 
@@ -92,6 +84,18 @@ example for searching: vmesg -t -i "tflite\|gpu"
 example for whole log: vmesg -c
 ```
 
+## How this upgrade was done (all wire)
+
+-	This repo contains lots of proprietary Qualcomm code and prebuilt software.
+-	After a stupid amount of work, I have most HAL programs compiling with Yocto's GCC.
+-	This is only for audio and BLE. For camera, I decided to just copy in those binaries (mm-camera recipe).
+-	If you want to change the code in mm-anki-camera or mm-qcamera-daemon for whatever reason, you'll have to clone vicos-oelinux-nosign, change the code there, compile it in there, then pack the built binaries into a --bzip2 tar and put it into prebuilt_HY11/mm-camera.
+	-	Why am I not having Yocto build them? This is because I would have to add ~2GB of code to the repo, I would have to figure out how to get Qualcomm's ancient "SDLLVM" compiler working, and because the binaries are stable enough.
+	-	UPDATE: some BLE binaries are being copied in now, too. explained later
+-	Much work upgrading Yocto recipes.
+-	All of the software is compiling with Yocto's GCC 14 or the Clang 18.1.8 vicos-sdk toolchain, with a couple of tiny exceptions.
+-	These exceptions include mm-anki-camera, mm-qcamera-daemon, ankibluetoothd, and hci_qcomm_init. They are able to compile under GCC 14, but there's a very low level issue which I haven't been able to figure out as of yet. I am copying prebuilt ones in for now.
+-	Some recipes are still somewhat old - these include wpa_supplicant and connman (I had issues with SAE)
 
 ## Viccyware was made possible though the work of some amazing community members
 
