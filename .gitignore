@@ -12,3 +12,7 @@ anki/vic-cloudless
 /vm-deps-installed
 /anki-deps
 /old-toolchain
+filesystems/bin/target/mtd-utils/ubi-tests/
+/filesystems/bin/target/mtd-utils/ubi-tests/         
+
+
