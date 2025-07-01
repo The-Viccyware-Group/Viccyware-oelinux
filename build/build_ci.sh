@@ -2,6 +2,9 @@
 
 set -e
 
+# Enable more verbose output
+set -x
+
 # Hidden arguments;
 # 1. -au: enable auto-updates
 
@@ -9,9 +12,6 @@ set -e
 # 1. I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE: set to 1 if you want to inhibit the -au interaction
 
 CREATOR="The Viccyware Group"
-
-CURRENT_CONTAINER_NAME="vic-yocto-builder-6"
-OLD_CONTAINER_NAME="vic-yocto-builder-5"
 
 function usage() {
     echo "$1"
@@ -71,29 +71,6 @@ function are_you_wire() {
 	fi
 }
 
-function errorMsg() {
-        echo -e "\033[1;31m${1}\033[0m"
-}
-
-function is_victor_there_and_compatible() {
-	if [[ ! -d anki/victor/engine ]]; then
-		errorMsg "anki/victor/engine not found. You likely don't have the victor submodule correctly configured."
-		exit 1
-	fi
-	VICTOR_COMPAT="$(cat anki/victor/VICTOR_COMPAT_VERSION)"
-	OELINUX_COMPAT="$(cat VICTOR_COMPAT_VERSION)"
-	if [[ ! "${VICTOR_COMPAT}" == "${OELINUX_COMPAT}" ]]; then
-		errorMsg "OELinux and victor compat versions are not the same."
-		echo
-		errorMsg "victor: ${VICTOR_COMPAT}"
-		errorMsg "OELinux: ${OELINUX_COMPAT}"
-		echo
-		errorMsg "Make sure you have synced all WireOS changes into your OS."
-		exit 1
-	fi
-	echo "OELinux and victor compat versions are the same"
-}
-
 while [ $# -gt 0 ]; do
     case "$1" in
         -bt) BOT_TYPE="$2"; shift ;;
@@ -108,8 +85,6 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
-
-is_victor_there_and_compatible
 
 if [[ "$BOT_TYPE" != "oskr" && "$BOT_TYPE" != "dev" && "$BOT_TYPE" != "prod" && "$BOT_TYPE" != "devcloudless" ]]; then
     usage "BOT_TYPE (-bt) should be 'oskr' or 'dev', got: $BOT_TYPE"
@@ -138,8 +113,6 @@ fi
 echo "All checks passed. Building."
 
 mkdir -p build/cache
-mkdir -p build/gocache
-mkdir -p build/usercache
 
 echo "Getting deps (if needed)..."
 ./build/deps.sh
@@ -166,15 +139,12 @@ YOCTO_BUILD_COMMAND="echo && echo -e \"\e[1;32mBuilding the OS...\e[0m\" && echo
 echo "Building a $BOT_TYPE OTA"
 export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
 
-ANKIDEV=1
-
 if [[ $BOT_TYPE == "oskr" ]]; then
         export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
 	BOOT_MAKE_COMMAND="make oskrsign"
 elif [[ $BOT_TYPE == "prod" ]]; then
         export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
 	BOOT_MAKE_COMMAND="make prodsign"
-	ANKIDEV=0
 elif [[ $BOT_TYPE == "devcloudless" ]]; then
         BOOT_MAKE_COMMAND="make devsign"
 else
@@ -186,38 +156,35 @@ if [[ $DO_SIGN == 1 ]]; then
     export DO_SIGN=$DO_SIGN
 fi
 
-if [[ ! -z $(docker images -q ${OLD_CONTAINER_NAME}) ]]; then
+if [[ ! -z $(docker images -q vic-yocto-builder-4) ]]; then
 	echo "Purging old docker containers... this might take a while"
-	docker ps -a --filter "ancestor=${OLD_CONTAINER_NAME}" -q | xargs -r docker rm -f
-	docker rmi -f $(docker images --filter "reference=${OLD_CONTAINER_NAME}*" --format '{{.ID}}')
-	#echo
-	#echo -e "\033[5m\033[1m\033[31mOld Docker builder detected on system. If you have built victor or wire-os many times, it is recommended you run:\033[0m"
-	#echo
-	#echo -e "\033[1m\033[36mdocker system prune -a --volumes\033[0m"
-	#echo
-	#echo -e "\033[32mPrevious versions of wire-os did not include a --rm flag in the docker run command. This means you probably have wasted space which can be cleared out with the above command.\033[0m"
-	#echo -e "\033[32mContinuing in 10 seconds...\033[0m"
-	#sleep 10
+	docker ps -a --filter "ancestor=vic-yocto-builder-4" -q | xargs -r docker rm -f
+	docker rmi -f $(docker images --filter "reference=vic-yocto-builder-4*" --format '{{.ID}}')
+	echo
+	echo -e "\033[5m\033[1m\033[31mOld Docker builder detected on system. If you have built victor or wire-os many times, it is recommended you run:\033[0m"
+	echo
+	echo -e "\033[1m\033[36mdocker system prune -a --volumes\033[0m"
+	echo
+	echo -e "\033[32mPrevious versions of wire-os did not include a --rm flag in the docker run command. This means you probably have wasted space which can be cleared out with the above command.\033[0m"
+	echo -e "\033[32mContinuing in 10 seconds...\033[0m"
+	sleep 10
 fi
 
-if [[ -z $(docker images -q ${CURRENT_CONTAINER_NAME}) ]]; then
-	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t ${CURRENT_CONTAINER_NAME} build/
+if [[ -z $(docker images -q vic-yocto-builder-5) ]]; then
+	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t vic-yocto-builder-5 build/
 else
-	echo "Reusing ${CURRENT_CONTAINER_NAME}"
+	echo "Reusing vic-yocto-builder-5"
 fi
-docker run -it --rm \
+docker run -i --rm \
     -v $(pwd)/anki-deps:/home/$USER/.anki \
     -v $(pwd):$(pwd) \
     -v $(pwd)/build/cache:/home/$USER/.ccache \
-    -v $(pwd)/build/gocache:/home/$USER/go \
-    -v $(pwd)/build/usercache:/home/$USER/.cache \
-    ${CURRENT_CONTAINER_NAME} bash -c \
+    vic-yocto-builder-5 bash -c \
     "cd $(pwd)/poky && \
     source build/conf/set_bb_env.sh && \
     export ANKI_BUILD_VERSION=$BUILD_INCREMENT && \
     export AUTO_UPDATE=${AUTO_UPDATE} && \
     ${YOCTO_CLEAN_COMMAND} && \
-    sleep 2 && \
     ${YOCTO_BUILD_COMMAND} && \
     cd ${DIRPATH}/ota && \
     rm -rf ../_build/*.img ../_build/*.stats ../_build/*.ini ../_build/*.enc && \
@@ -225,7 +192,7 @@ docker run -it --rm \
     export OTA_MANIFEST_SIGNING_KEY=${OTA_SIGNING_KEY_PASSWORD} && \
     export BOOT_IMAGE_SIGNING_PASSWORD=${BOOT_PASSWORD} && \
     ${BOOT_MAKE_COMMAND} && \
-    ANKIDEV=${ANKIDEV} make"
+    make"
 
 echo
 echo -e "\033[1;32mCompleted successfully. Output is in ./_build.\033[0m"
