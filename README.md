@@ -13,15 +13,8 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 
 ## Update notes:
 
-- **05-21-2025**: you might want to run `./build/clean.sh "connman wpa-supplicant base-files systemd tzdata alsa-lib alsa-tools alsa-utils"` before building again
-- **05-24-2025**: `./build/clean.sh "connman wpa-supplicant fake-hwclock initscript-anki"`
-- **05-24-2025 again**: `./build/clean.sh "ethtool iptables-persistent"`
-- **06-02-2025**: `./build/clean.sh "system-core"`
-- **06-05-2025**: `./build/clean.sh "lvm2 libpam packagegroup-core-base-utils"`
-- **06-08-2025**: `./build/clean.sh "systemd packagegroup-core-boot"`
-- **06-10-2025**: `./build/clean.sh "system-core"`
-- **06-17-2025**: `./build/clean.sh "connman wpa-supplicant"`
-- **06-19-2025**: **PLEASE DO THIS**: `./build/clean.sh "linux-msm rmtstorage"`
+- **06-23-25**: Full rebuild required, sorry. The build script will automatically do this.
+- **06-28-25**: `./build/clean.sh "linux-msm"`
 
 ## Build
 
@@ -29,7 +22,7 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 
 1. [Install Docker](https://docs.docker.com/engine/install/), git, and wget.
 
-2. Configure it so a regular user can use it:
+2. Configure Docker so a regular user can use it:
 
 ```
 sudo groupadd docker
@@ -47,17 +40,17 @@ cd Viccyware-oelinux
 ./build/build.sh -bt <dev/oskr> -bp <boot-passwd> -v <build-increment>
 # boot password not required for dev
 # example: ./build/build.sh -bt dev -v 1
+# <build-increment> is what the last number of the version string will be - if it's 1, it will be 3.0.1.1.ota
 ```
 
 ### Where is my OTA?
-
 `./_build/Viccyware-0.5.(x).ota`
 
 ## Differences compared to normal Vector FW
 
 -   New OS base
     -   Yocto Walnascar rather than Jethro
-        -   glibc 2.41 (latest as of 04-2025)
+        -   glibc 2.41 (latest as of 06-2025)
 -   `victor` software compiled with Clang 18.1.8 rather than 5.0.1
 -   Rainbow eye color
     -   Can be activated in :8888/demo.html
@@ -66,13 +59,23 @@ cd Viccyware-oelinux
         -   He will somewhat randomly do loosepixel and binaryeyes
     -   Better camera gamma correction
         -   He handles too-bright situations much better now
--   Picovoice wakeword engine
+-   Picovoice Porcupine (1.5) wakeword engine
     -   Custom wake words in :8080 webserver!
 -   `htop` and `rsync` are embedded
 -   Python 3.13 rather than Python 2
+-   General bug fixes - for instance, now he won't read the EMR partition upon every single screen draw (DDL bug)
+-   :8080 webserver for configuring things I don't want to integrate into a normal app
+-   Cat and dog detection (basic, similar to Cozmo)
+-   Smaller OTA size - a dev OTA is 166M somehow
+-   New Anki boot animation, new pre-boot-anim splash screen, rainbow backpack light animations
+-   TensorFlow Lite has been updated to v2.19.0 (latest as of 06-2025)
+	-  This means we can maybe leverage the GPU delegate at some point
+	-  XNNPACK - the CPU delegate - is faster than what was there before
+-   OpenCV has been recompiled under Clang 18 - this seems to have made it quite a bit smaller
 -   Fixed fault code handler
     - No more 980 or 981 after crash on Vector 2.0
 -   Global SSH key ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
+
 
 ## Helpful scripts
 
@@ -80,6 +83,8 @@ cd Viccyware-oelinux
 	-	If you are debugging `victor` and want to see backtraces in /var/log/messages, run this to enable those.
 -	`ddn [on/off]`
 	-	Turns on/off DevDoNothing, which makes the bot stand still until shaken.
+-	`reonboard`
+	-	Puts him back into onboarding mode without fully clearing user data
 -	`vmesg [-c|-t] <grep args>`
 	-	A wrapper for cat/tail /var/log/messages:
 
@@ -92,6 +97,20 @@ example for searching: vmesg -t -i "tflite\|gpu"
 example for whole log: vmesg -c
 ```
 
+## Proprietary software notes
+
+-	This repo contains lots of proprietary Qualcomm code and prebuilt software.
+-	After a stupid amount of work, I have most HAL programs compiling with Yocto's GCC 14. It wasn't terribly difficult since it's generally all autotools, but some jank is still involved, and it was still time-consuming.
+-	The camera programs and *some* of the BLE programs are being copied in rather than compiled.
+	-	Why not compile camera programs? Because I would have to add 2GB to the repo and figure out how to use the weird Qualcomm-specific toolchain.
+	-	Why not compile those BLE programs? `ankibluetoothd` and `hci_qcomm_init` are able to compile under GCC 14, but there is some weird low-level issue which makes them unable to properly communicate with a BLE library. So, for now, I am just copying pre-compiled ones in. I will probably try to fix this at some point.
+
+## How this upgrade was done
+
+-	Much work upgrading Yocto recipes.
+-	All of the software is compiling with Yocto's GCC 14 or the Clang 18.1.8 vicos-sdk toolchain, with a couple of tiny exceptions.
+-	Some recipes are still somewhat old - these include wpa_supplicant and connman (I had issues with SAE - he's able to recognize SAE networks, but his WLAN driver and kernel don't know how to actually connect to it, and I was unable to disable it in modern wpa_supplicant and connman)
+
 
 ## Viccyware was made possible though the work of some amazing community members
 
@@ -101,3 +120,4 @@ example for whole log: vmesg -c
 - [ThommoMC](https://github.com/ThommoMC)
 - [Gaming Time](https://github.com/gamingtimevr)
 - [Raj-jyot Deol / Switch_modder](https://github.com/Switch-modder)
+

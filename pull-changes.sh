@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Pulling Viccyware changes"
+echo "Pulling changes across repo and submodules"
 git pull --recurse-submodules
 cd anki/victor
 git checkout Viccyware-tester
