@@ -11,6 +11,10 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 - /anki/victor -> [Viccyware](https://github.com/Switch-modder/Viccyware) (Viccyware-tester)
 - /anki/wired -> [wired](https://github.com/os-vector/wired) (main)
 
+## Prebuilt OTA:
+
+WireOS is in the dropdown box in [https://devsetup.froggitti.net/](https://devsetup.froggitti.net/). Put your unlocked bot into recovery mode (hold the button for 15 seconds on the charger), head to the site, choose wireOS, then go through the process.
+
 ## Update notes:
 
 - **06-23-25**: Full rebuild required, sorry. The build script will automatically do this.
