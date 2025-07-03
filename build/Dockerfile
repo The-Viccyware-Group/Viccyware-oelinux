@@ -69,10 +69,7 @@ RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 RUN go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
 RUN mv $(go env GOPATH)/bin/* /usr/bin/
 
-RUN wget https://github.com/ccache/ccache/releases/download/v4.11.3/ccache-4.11.3-linux-x86_64.tar.xz
-RUN tar -xf ccache-4.11.3-linux-x86_64.tar.xz
-RUN mv ccache-4.11.3-linux-x86_64/ccache /usr/bin/
-RUN chmod +x /usr/bin/ccache
+RUN apt-get install -y ccache
 
 RUN chmod 0755 /usr/bin/upx
 

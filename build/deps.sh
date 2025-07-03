@@ -41,9 +41,9 @@ if [[ ! -d anki-deps/vicos-sdk/dist/${VICOS_SDK_VERSION}/prebuilt ]]; then
 	fi
 	mkdir -p anki-deps/vicos-sdk/dist/${VICOS_SDK_VERSION}
 	cd anki-deps/vicos-sdk/dist/${VICOS_SDK_VERSION}
-	wget -q --show-progress https://github.com/os-vector/wire-os-externals/releases/download/${VICOS_SDK_VERSION}/vicos-sdk_${VICOS_SDK_VERSION}_amd64-linux.tar.gz
-	tar -zxvf vicos-sdk_${VICOS_SDK_VERSION}_amd64-linux.tar.gz
-	rm -f vicos-sdk_${VICOS_SDK_VERSION}_amd64-linux.tar.gz
+	wget -q --show-progress https://github.com/os-vector/wire-os-externals/releases/download/${VICOS_SDK_VERSION}/vicos-sdk_${VICOS_SDK_VERSION}_arm64-linux.tar.gz
+	tar -zxvf vicos-sdk_${VICOS_SDK_VERSION}_arm64-linux.tar.gz
+	rm -f vicos-sdk_${VICOS_SDK_VERSION}_arm64-linux.tar.gz
 fi
 
 cd "$OD"
