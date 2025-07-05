@@ -35,9 +35,9 @@ echo Copy OSKR OTA
 scp -i "$KEY_PATH" _build/0.6.0."$INCREMENT"oskr.ota root@froggitti.net:/home/cozmo/Desktop/all_servers/Viccyware-ota-server/vicw/otas/full/oskr/0.6.0."$INCREMENT".ota
 
 echo Copy Dev OTA to a never-changing URL
-ssh -i "$KEY_PATH" "cp /home/cozmo/Desktop/all_servers/Viccyware-ota-server/vicw/otas/full/dev/0.6.0."$INCREMENT".ota /home/cozmo/Desktop/all_servers/Viccyware-ota-server/vicw/otas/full/latest/dev.ota"
+ssh -i "$KEY_PATH" root@froggitti.net "cp /home/cozmo/Desktop/all_servers/Viccyware-ota-server/vicw/otas/full/dev/0.6.0."$INCREMENT".ota /home/cozmo/Desktop/all_servers/Viccyware-ota-server/vicw/otas/full/latest/dev.ota"
 
 echo Copy OSKR OTA to a never-changing URL
-ssh -i "$KEY_PATH" "cp /home/cozmo/Desktop/all_servers/Viccyware-ota-server/vicw/otas/full/oskr/0.6.0."$INCREMENT".ota /home/cozmo/Desktop/all_servers/Viccyware-ota-server/vicw/otas/full/latest/oskr.ota"
+ssh -i "$KEY_PATH" root@froggitti.net "cp /home/cozmo/Desktop/all_servers/Viccyware-ota-server/vicw/otas/full/oskr/0.6.0."$INCREMENT".ota /home/cozmo/Desktop/all_servers/Viccyware-ota-server/vicw/otas/full/latest/oskr.ota"
 
 
