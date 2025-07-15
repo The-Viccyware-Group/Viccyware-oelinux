@@ -19,10 +19,10 @@ function usage() {
     exit 1
 }
 
-if [[ ! "$(uname -a)" == *"Linux"* ]] || [[ ! "$(uname -a)" == *"x86_64"* ]]; then
-	echo "This is not x86_64/amd64 Linux. Exiting."
-	exit 1
-fi
+#if [[ ! "$(uname -a)" == *"Linux"* ]] || [[ ! "$(uname -a)" == *"x86_64"* ]]; then
+#	echo "This is not x86_64/amd64 Linux. Exiting."
+#	exit 1
+#fi
 
 function check_sign_prod() {
     if openssl rsa -in ota/qtipri.encrypted.key -passin pass:"$BOOT_PASSWORD" -noout 2>/dev/null; then
@@ -202,7 +202,7 @@ fi
 # fi
 
 if [[ -z $(docker images -q ${CURRENT_CONTAINER_NAME}) ]]; then
-	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t ${CURRENT_CONTAINER_NAME} build/
+	docker build --platform linux/arm64 --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t ${CURRENT_CONTAINER_NAME} build/
 else
 	echo "Reusing ${CURRENT_CONTAINER_NAME}"
 fi
