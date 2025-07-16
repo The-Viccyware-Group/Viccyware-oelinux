@@ -8,21 +8,21 @@ set -e
 # Hidden env vars:
 # 1. AUTO_UPDATE: set to 1 if you want to inhibit the -au interaction
 
-CREATOR="Wire"
+CREATOR="The Viccyware Group"
 
 CURRENT_CONTAINER_NAME="vic-yocto-builder-7"
 
 function usage() {
     echo "$1"
-    echo "Usage: ./build/build.sh -bt <dev/oskr/devcloudless> -s -op <OTA-pw> -bp <boot-passwd> -v <build-increment>"
-    echo "Usage (no signing): ./build/build.sh -bt <dev/oskr/devcloudless> -bp <boot-passwd> -v <build-increment>"
+    echo "Usage: ./build/build.sh -bt <dev/oskr/devcloudless/oskrcloudless> -s -op <OTA-pw> -bp <boot-passwd> -v <build-increment>"
+    echo "Usage (no signing): ./build/build.sh -bt <dev/oskr/devcloudless/oskrcloudless> -bp <boot-passwd> -v <build-increment>"
     exit 1
 }
 
-if [[ ! "$(uname -a)" == *"Linux"* ]] || [[ ! "$(uname -a)" == *"x86_64"* ]]; then
-	echo "This is not x86_64/amd64 Linux. Exiting."
-	exit 1
-fi
+#if [[ ! "$(uname -a)" == *"Linux"* ]] || [[ ! "$(uname -a)" == *"x86_64"* ]]; then
+#	echo "This is not x86_64/amd64 Linux. Exiting."
+#	exit 1
+#fi
 
 function check_sign_prod() {
     if openssl rsa -in ota/qtipri.encrypted.key -passin pass:"$BOOT_PASSWORD" -noout 2>/dev/null; then
@@ -60,10 +60,10 @@ function check_sign_ota() {
 
 function are_you_wire() {
 	if [[ "${AUTO_UPDATE}" != "1" ]]; then
-		echo "Are you $CREATOR?"
+		echo "Are you part of the $CREATOR?"
 		read -p "(y/n): " yn
 		case $yn in
-			[Yy]* ) echo "Cool." ;;
+			[Yy]* ) echo "Cool. Wire is stupid btw!" ;;
 			[Nn]* ) echo; echo "Then don't use the -au argument!"; exit 1;;
 			* ) echo "that is not a y or an n."; exit 1;;
 		esac
@@ -115,8 +115,8 @@ fi
 
 is_victor_there_and_compatible
 
-if [[ "$BOT_TYPE" != "oskr" && "$BOT_TYPE" != "dev" && "$BOT_TYPE" != "prod" && "$BOT_TYPE" != "devcloudless" ]]; then
-    usage "BOT_TYPE (-bt) should be 'oskr' or 'dev', got: $BOT_TYPE"
+if [[ "$BOT_TYPE" != "oskr" && "$BOT_TYPE" != "dev" && "$BOT_TYPE" != "prod" && "$BOT_TYPE" != "devcloudless" && "$BOT_TYPE" != "oskrcloudless" ]]; then
+    usage "BOT_TYPE (-bt) should be 'oskr', 'dev', 'devcloudless', or 'oskrcloudless', got: $BOT_TYPE"
 fi
 
 if [[ "$DO_SIGN" == 1 && "$OTA_SIGNING_KEY_PASSWORD" == "" ]]; then
@@ -127,7 +127,7 @@ if [[ "$DO_SIGN" == 1 ]]; then
     check_sign_ota
 fi
 
-if [[ "$BOT_TYPE" == "oskr" ]]; then
+if [[ "$BOT_TYPE" == "oskr" && "$BOT_TYPE" == "oskrcloudless" ]]; then
     check_sign_oskr
 fi
 
@@ -178,6 +178,9 @@ elif [[ $BOT_TYPE == "prod" ]]; then
 	ANKIDEV=0
 elif [[ $BOT_TYPE == "devcloudless" ]]; then
         BOOT_MAKE_COMMAND="make devsign"
+elif [[ $BOT_TYPE == "oskrcloudless" ]]; then
+        export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
+        BOOT_MAKE_COMMAND="make oskrsign"
 else
 	BOOT_MAKE_COMMAND="make devsign"
 fi
@@ -202,7 +205,7 @@ fi
 # fi
 
 if [[ -z $(docker images -q ${CURRENT_CONTAINER_NAME}) ]]; then
-	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t ${CURRENT_CONTAINER_NAME} build/
+	docker build --platform linux/arm64 --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t ${CURRENT_CONTAINER_NAME} build/
 else
 	echo "Reusing ${CURRENT_CONTAINER_NAME}"
 fi
