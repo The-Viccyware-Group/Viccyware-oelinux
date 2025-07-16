@@ -10,8 +10,7 @@ set -e
 
 CREATOR="The Viccyware Group"
 
-CURRENT_CONTAINER_NAME="vic-yocto-builder-6"
-OLD_CONTAINER_NAME="vic-yocto-builder-5"
+CURRENT_CONTAINER_NAME="vic-yocto-builder-7"
 
 function usage() {
     echo "$1"
@@ -20,10 +19,10 @@ function usage() {
     exit 1
 }
 
-if [[ ! "$(uname -a)" == *"Linux"* ]] || [[ ! "$(uname -a)" == *"x86_64"* ]]; then
-	echo "This is not x86_64/amd64 Linux. Exiting."
-	exit 1
-fi
+#if [[ ! "$(uname -a)" == *"Linux"* ]] || [[ ! "$(uname -a)" == *"x86_64"* ]]; then
+#	echo "This is not x86_64/amd64 Linux. Exiting."
+#	exit 1
+#fi
 
 function check_sign_prod() {
     if openssl rsa -in ota/qtipri.encrypted.key -passin pass:"$BOOT_PASSWORD" -noout 2>/dev/null; then
@@ -146,9 +145,6 @@ mkdir -p build/cache
 mkdir -p build/gocache
 mkdir -p build/usercache
 
-echo "Getting deps (if needed)..."
-./build/deps.sh
-
 rm -rf poky/build/tmp-glibc/deploy/images/apq8009-robot-robot-perf/apq8009-robot-sysfs.ext4
 
 DIRPATH="$(pwd)"
@@ -194,22 +190,22 @@ if [[ $DO_SIGN == 1 ]]; then
     export DO_SIGN=$DO_SIGN
 fi
 
-if [[ ! -z $(docker images -q ${OLD_CONTAINER_NAME}) ]]; then
-	echo "Purging old docker containers... this might take a while"
-	docker ps -a --filter "ancestor=${OLD_CONTAINER_NAME}" -q | xargs -r docker rm -f
-	docker rmi -f $(docker images --filter "reference=${OLD_CONTAINER_NAME}*" --format '{{.ID}}')
-	#echo
-	#echo -e "\033[5m\033[1m\033[31mOld Docker builder detected on system. If you have built victor or wire-os many times, it is recommended you run:\033[0m"
-	#echo
-	#echo -e "\033[1m\033[36mdocker system prune -a --volumes\033[0m"
-	#echo
-	#echo -e "\033[32mPrevious versions of wire-os did not include a --rm flag in the docker run command. This means you probably have wasted space which can be cleared out with the above command.\033[0m"
-	#echo -e "\033[32mContinuing in 10 seconds...\033[0m"
-	#sleep 10
-fi
+# if [[ ! -z $(docker images -q ${OLD_CONTAINER_NAME}) ]]; then
+# 	echo "Purging old docker containers... this might take a while"
+# 	docker ps -a --filter "ancestor=${OLD_CONTAINER_NAME}" -q | xargs -r docker rm -f
+# 	docker rmi -f $(docker images --filter "reference=${OLD_CONTAINER_NAME}*" --format '{{.ID}}')
+# 	#echo
+# 	#echo -e "\033[5m\033[1m\033[31mOld Docker builder detected on system. If you have built victor or wire-os many times, it is recommended you run:\033[0m"
+# 	#echo
+# 	#echo -e "\033[1m\033[36mdocker system prune -a --volumes\033[0m"
+# 	#echo
+# 	#echo -e "\033[32mPrevious versions of wire-os did not include a --rm flag in the docker run command. This means you probably have wasted space which can be cleared out with the above command.\033[0m"
+# 	#echo -e "\033[32mContinuing in 10 seconds...\033[0m"
+# 	#sleep 10
+# fi
 
 if [[ -z $(docker images -q ${CURRENT_CONTAINER_NAME}) ]]; then
-	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t ${CURRENT_CONTAINER_NAME} build/
+	docker build --platform linux/arm64 --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t ${CURRENT_CONTAINER_NAME} build/
 else
 	echo "Reusing ${CURRENT_CONTAINER_NAME}"
 fi
