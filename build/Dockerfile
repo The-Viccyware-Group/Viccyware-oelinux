@@ -43,7 +43,10 @@ RUN mv go /usr/local/
 RUN ln -sf /usr/local/go/bin/go /usr/bin/go
 RUN mkdir /root/go
 
-RUN apt-get install -y ccache
+RUN wget https://github.com/ccache/ccache/releases/download/v4.11.3/ccache-4.11.3-linux-x86_64.tar.xz
+RUN tar -xf ccache-4.11.3-linux-x86_64.tar.xz
+RUN mv ccache-4.11.3-linux-x86_64/ccache /usr/bin/
+RUN chmod +x /usr/bin/ccache
 
 RUN chmod 0755 /usr/bin/upx
 
