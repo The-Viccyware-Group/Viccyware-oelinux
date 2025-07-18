@@ -9,16 +9,13 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 - /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (walnascar)
 - /poky/meta-openembedded -> [openembedded/meta-openembedded](https://github.com/openembedded/meta-openembedded) (walnascar)
 - /anki/victor -> [Viccyware](https://github.com/Switch-modder/Viccyware) (Viccyware-tester)
+  - Where all the personality code lives 
 - /anki/wired -> [wired](https://github.com/os-vector/wired) (main)
+  - Little webserver with configuration options
 
 ## Prebuilt OTA:
 
 Viccyware is in the dropdown box in [https://devsetup.froggitti.net/](https://devsetup.froggitti.net/). Put your unlocked bot into recovery mode (hold the button for 15 seconds on the charger), head to the site, choose Viccyware, then go through the process.
-
-## Update notes:
-
-- **06-23-25**: Full rebuild required, sorry. The build script will automatically do this.
-- **06-28-25**: `./build/clean.sh "linux-msm"`
 
 ## Build
 
@@ -54,8 +51,9 @@ cd Viccyware-oelinux
 
 -   New OS base
     -   Yocto Walnascar rather than Jethro
-        -   glibc 2.41 (latest as of 06-2025)
+        -   glibc 2.41 (latest as of 07-2025)
 -   `victor` software compiled with Clang 18.1.8 rather than 5.0.1
+    -	The code is properly fixed so there are no compile warnings
 -   Rainbow eye color
     -   Can be activated in :8888/demo.html
 -   Some Anki-era PRs have been merged
@@ -70,16 +68,16 @@ cd Viccyware-oelinux
 -   General bug fixes - for instance, now he won't read the EMR partition upon every single screen draw (DDL bug)
 -   :8080 webserver for configuring things I don't want to integrate into a normal app
 -   Cat and dog detection (basic, similar to Cozmo)
--   Smaller OTA size - a dev OTA is 166M somehow
+-   Smaller OTA size - a dev OTA is 171M somehow
 -   New Anki boot animation, new pre-boot-anim splash screen, rainbow backpack light animations
--   TensorFlow Lite has been updated to v2.19.0 (latest as of 06-2025)
+-   TensorFlow Lite has been updated to v2.19.0 (latest as of 07-2025)
 	-  This means we can maybe leverage the GPU delegate at some point
 	-  XNNPACK - the CPU delegate - is faster than what was there before
--   OpenCV has been recompiled under Clang 18 - this seems to have made it quite a bit smaller
--   Fixed fault code handler
-    - No more 980 or 981 after crash on Vector 2.0
--   Global SSH key ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
-
+-   OpenCV has been updated to 4.12.0 (latest as of 07-2025)
+  	-  Much better SDK streaming performance
+-   [Face overlays](https://www.reddit.com/r/AnkiVector/comments/1lteb3m/_/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
+        -  How to activate: [wire-os-victor PR #17](https://github.com/os-vector/wire-os-victor/pull/17)
+-   Global SSH key: ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
 
 ## Helpful scripts
 
@@ -91,6 +89,8 @@ cd Viccyware-oelinux
 	-	Puts him back into onboarding mode without fully clearing user data
 -	`vmesg [-c|-t] <grep args>`
 	-	A wrapper for cat/tail /var/log/messages:
+-	`temper`
+	-	Simple script which tells you CPU temps
 
 ```
 usage: vmesg [-t|-c] <grep args>
