@@ -28,7 +28,7 @@ if [ -f /data/vicw-volume ]; then
     "MEDIUM")
       VOLUME_VALUE=60
       ;;
-    "MEDIUM HIGH")
+    "MEDIUM_HIGH")
       VOLUME_VALUE=65
       ;;
     "HIGH")
@@ -41,8 +41,8 @@ if [ -f /data/vicw-volume ]; then
   esac
 else
   echo "anki-audio-init: Volume file not found, using high volume and making file for next time." > /dev/kmsg
-  echo HIGH > /data/vicw-volume
-  VOLUME_VALUE=70
+  echo MEDIUM_HIGH > /data/vicw-volume
+  VOLUME_VALUE=65
 fi
 
 echo "anki-audio-init: Setting volume to $VOLUME_VALUE ($VOLUME_SETTING)" > /dev/kmsg
