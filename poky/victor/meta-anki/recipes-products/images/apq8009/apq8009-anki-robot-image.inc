@@ -38,8 +38,6 @@ IMAGE_INSTALL += "rebooter"
 IMAGE_INSTALL += "${@oe.utils.conditional('USER_BUILD', '1', '', 'update-os', d)}"
 IMAGE_INSTALL += "anki-update-engine"
 IMAGE_INSTALL += "fault-code"
-IMAGE_INSTALL += "faultcodesound"
-IMAGE_INSTALL += "vicw-utils"
 
 IMAGE_INSTALL += "python3-netclient"
 IMAGE_INSTALL += "python3-compression"
@@ -53,3 +51,7 @@ IMAGE_INSTALL += "paycheck"
 
 IMAGE_INSTALL += "${@oe.utils.conditional('USER_BUILD', '1', '', 'wireutils', d)}"
 
+# Viccyware specific (pls keep alphabetical :3)
+IMAGE_INSTALL += "faultcodesound"
+IMAGE_INSTALL += "tam-boot-chime"
+IMAGE_INSTALL += "vicw-utils"
