@@ -5,6 +5,11 @@ LICENSE = "CLOSED"
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 SRC_URI = "file://xp-error.wav"
 
+do_unpack[noexec] = "1"
+do_patch[noexec] = "1"
+do_configure[noexec] = "1"
+do_compile[noexec] = "1"
+
 do_install() {
     install -d ${D}${bindir}
     install -m 0644 ${UNPACKDIR}/xp-error.wav ${D}${bindir}/
