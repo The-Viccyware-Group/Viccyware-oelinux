@@ -1,8 +1,9 @@
 [Unit]
 SourcePath=/etc/initscripts/anki-audio-init
 Description=Anki ALSA init
-Wants=init_post_boot.service init_audio.service
-After=init_post_boot.service init_audio.service
+Wants=vic-robot.service init_audio.service
+After=vic-robot.service init_audio.service
+BindsTo=vic-robot.service
 
 [Service]
 Type=oneshot
