@@ -64,7 +64,9 @@ amixer cset numid=1641 1
 # tinymix set "RX3 Digital Volume" 74
 amixer cset numid=33 74
 
-[ ! -f /run/after_maintenance_reboot ] aplay /bin/tam-boot-chime.wav
+if [ ! -f /run/after_maintenance_reboot ]; then
+    aplay /bin/tam-boot-chime.wav
+fi
 
 # no longer sets it to 74, calls it from file
 amixer cset numid=33 $VOLUME_VALUE
