@@ -2,10 +2,8 @@
 
 _build/
 bb-files.txt
-anki/vic-cloudless
 /anki/vic-cloudless
 **.DS_Store
-build/build_ci.sh
 /build/build_ci.sh
 /build/cache
 /build/gocache
@@ -14,3 +12,5 @@ build/build_ci.sh
 /vm-deps-installed
 /anki-deps
 /old-toolchain
+/filesystems/
+filesystems/
