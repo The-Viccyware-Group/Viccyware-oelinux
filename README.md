@@ -116,12 +116,11 @@ example for whole log: vmesg -c
 -	Some recipes are still somewhat old - these include wpa_supplicant and connman (I had issues with SAE - he's able to recognize SAE networks, but his WLAN driver and kernel don't know how to actually connect to it, and I was unable to disable it in modern wpa_supplicant and connman)
 
 
-## Viccyware was made possible though the work of some amazing community members
+## Contributors
 
-- [Wire](https://github.com/kercre123)
-- [Yrekcaz](https://github.com/Yrekcaz)
-- [Froggitti](https://github.com/froggitti)
-- [ThommoMC](https://github.com/ThommoMC)
-- [Gaming Time](https://github.com/gamingtimevr)
-- [Raj-jyot Deol / Switch_modder](https://github.com/Switch-modder)
+<a href="https://github.com/The-Viccyware-Group/Viccyware-oelinux/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=The-Viccyware-Group/Viccyware-oelinux" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
 
