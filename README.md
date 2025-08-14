@@ -6,11 +6,11 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 
 ## Submodules
 
-- /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (walnascar)
-- /poky/meta-openembedded -> [openembedded/meta-openembedded](https://github.com/openembedded/meta-openembedded) (walnascar)
-- /anki/victor -> [Viccyware](https://github.com/Switch-modder/Viccyware) (Viccyware-tester)
-  - Where all the personality code lives 
-- /anki/wired -> [wired](https://github.com/os-vector/wired) (main)
+- /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (master)
+- /poky/meta-openembedded -> [openembedded/meta-openembedded](https://github.com/openembedded/meta-openembedded) (master)
+- /anki/victor -> [Viccyware](https://github.com/The-Viccyware-Group/Viccyware) (Viccyware-tester)
+  - Where all the personality code lives - the README there has more info
+- /anki/wired -> [wired](https://github.com/The-Viccyware-Group/wired) (main)
   - Little webserver with configuration options
 
 ## Prebuilt OTA:
@@ -50,8 +50,8 @@ cd Viccyware-oelinux
 ## Differences compared to normal Vector FW
 
 -   New OS base
-    -   Yocto Walnascar rather than Jethro
-        -   glibc 2.41 (latest as of 07-2025)
+    -   Yocto Whinlatter rather than Jethro
+        -   glibc 2.42 (latest as of 08-2025)
 -   `victor` software compiled with Clang 18.1.8 rather than 5.0.1
     -	The code is properly fixed so there are no compile warnings
 -   Rainbow eye color
@@ -104,15 +104,15 @@ example for whole log: vmesg -c
 ## Proprietary software notes
 
 -	This repo contains lots of proprietary Qualcomm code and prebuilt software.
--	After a stupid amount of work, I have most HAL programs compiling with Yocto's GCC 14. It wasn't terribly difficult since it's generally all autotools, but some jank is still involved, and it was still time-consuming.
+-	After a stupid amount of work, I have most HAL programs compiling with Yocto's GCC 15. It wasn't terribly difficult since it's generally all autotools, but some jank is still involved, and it was still time-consuming.
 -	The camera programs and *some* of the BLE programs are being copied in rather than compiled.
 	-	Why not compile camera programs? Because I would have to add 2GB to the repo and figure out how to use the weird Qualcomm-specific toolchain.
-	-	Why not compile those BLE programs? `ankibluetoothd` and `hci_qcomm_init` are able to compile under GCC 14, but there is some weird low-level issue which makes them unable to properly communicate with a BLE library. So, for now, I am just copying pre-compiled ones in. I will probably try to fix this at some point.
+	-	Why not compile those BLE programs? `ankibluetoothd` and `hci_qcomm_init` are able to compile under GCC 15, but there is some weird low-level issue which makes them unable to properly communicate with a BLE library. So, for now, I am just copying pre-compiled ones in. I will probably try to fix this at some point.
 
 ## How this upgrade was done
 
 -	Much work upgrading Yocto recipes.
--	All of the software is compiling with Yocto's GCC 14 or the Clang 18.1.8 vicos-sdk toolchain, with a couple of tiny exceptions.
+-	All of the software is compiling with Yocto's GCC 15 or the Clang 18.1.8 vicos-sdk toolchain, with a couple of tiny exceptions.
 -	Some recipes are still somewhat old - these include wpa_supplicant and connman (I had issues with SAE - he's able to recognize SAE networks, but his WLAN driver and kernel don't know how to actually connect to it, and I was unable to disable it in modern wpa_supplicant and connman)
 
 
