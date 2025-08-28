@@ -7,6 +7,7 @@ IMAGE_INSTALL += "anki-crash-log"
 IMAGE_INSTALL += "anki-robot-target"
 IMAGE_INSTALL += "anki-version"
 IMAGE_INSTALL += "ankiwifi"
+IMAGE_INSTALL += "wipe-all-wifi-configs"
 
 # Victor stuff
 IMAGE_INSTALL += "vic-anim"
@@ -29,6 +30,7 @@ IMAGE_INSTALL += "wired"
 
 IMAGE_INSTALL += "avahi-daemon"
 IMAGE_INSTALL += "${@oe.utils.conditional('USER_BUILD', '1', '', 'neofetch', d)}"
+IMAGE_INSTALL += "${@oe.utils.conditional('USER_BUILD', '1', '', 'btop', d)}"
 
 # Other stuff
 IMAGE_INSTALL += "bspatch"

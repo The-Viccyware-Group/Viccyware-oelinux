@@ -6,14 +6,16 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 
 ## Submodules
 
-- /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (walnascar)
-- /poky/meta-openembedded -> [openembedded/meta-openembedded](https://github.com/openembedded/meta-openembedded) (walnascar)
-- /anki/victor -> [Viccyware](https://github.com/Switch-modder/Viccyware) (Viccyware-tester)
-- /anki/wired -> [wired](https://github.com/os-vector/wired) (main)
+- /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (master)
+- /poky/meta-openembedded -> [openembedded/meta-openembedded](https://github.com/openembedded/meta-openembedded) (master)
+- /anki/victor -> [Viccyware](https://github.com/The-Viccyware-Group/Viccyware) (Viccyware-tester)
+  - Where all the personality code lives - the README there has more info
+- /anki/wired -> [wired](https://github.com/The-Viccyware-Group/wired) (main)
+  - Little webserver with configuration options
 
-## Update notes:
+## Prebuilt OTA:
 
-- **06-23-25**: Full rebuild required, sorry. The build script will automatically do this.
+Viccyware is in the dropdown box in [https://devsetup.froggitti.net/](https://devsetup.froggitti.net/). Put your unlocked bot into recovery mode (hold the button for 15 seconds on the charger), head to the site, choose Viccyware, then go through the process.
 
 ## Build
 
@@ -21,7 +23,7 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 
 1. [Install Docker](https://docs.docker.com/engine/install/), git, and wget.
 
-2. Configure it so a regular user can use it:
+2. Configure Docker so a regular user can use it:
 
 ```
 sudo groupadd docker
@@ -39,18 +41,19 @@ cd Viccyware-oelinux
 ./build/build.sh -bt <dev/oskr> -bp <boot-passwd> -v <build-increment>
 # boot password not required for dev
 # example: ./build/build.sh -bt dev -v 1
+# <build-increment> is what the last number of the version string will be - if it's 1, it will be 3.0.1.1.ota
 ```
 
 ### Where is my OTA?
-
 `./_build/Viccyware-0.5.(x).ota`
 
 ## Differences compared to normal Vector FW
 
 -   New OS base
-    -   Yocto Walnascar rather than Jethro
-        -   glibc 2.41 (latest as of 04-2025)
+    -   Yocto Whinlatter rather than Jethro
+        -   glibc 2.42 (latest as of 08-2025)
 -   `victor` software compiled with Clang 18.1.8 rather than 5.0.1
+    -	The code is properly fixed so there are no compile warnings
 -   Rainbow eye color
     -   Can be activated in :8888/demo.html
 -   Some Anki-era PRs have been merged
@@ -58,13 +61,23 @@ cd Viccyware-oelinux
         -   He will somewhat randomly do loosepixel and binaryeyes
     -   Better camera gamma correction
         -   He handles too-bright situations much better now
--   Picovoice wakeword engine
+-   Picovoice Porcupine (1.5) wakeword engine
     -   Custom wake words in :8080 webserver!
 -   `htop` and `rsync` are embedded
 -   Python 3.13 rather than Python 2
--   Fixed fault code handler
-    - No more 980 or 981 after crash on Vector 2.0
--   Global SSH key ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
+-   General bug fixes - for instance, now he won't read the EMR partition upon every single screen draw (DDL bug)
+-   :8080 webserver for configuring things I don't want to integrate into a normal app
+-   Cat and dog detection (basic, similar to Cozmo)
+-   Smaller OTA size - a dev OTA is 171M somehow
+-   New Anki boot animation, new pre-boot-anim splash screen, rainbow backpack light animations
+-   TensorFlow Lite has been updated to v2.19.0 (latest as of 07-2025)
+	-  This means we can maybe leverage the GPU delegate at some point
+	-  XNNPACK - the CPU delegate - is faster than what was there before
+-   OpenCV has been updated to 4.12.0 (latest as of 07-2025)
+  	-  Much better SDK streaming performance
+-   [Face overlays](https://www.reddit.com/r/AnkiVector/comments/1lteb3m/_/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
+        -  How to activate: [wire-os-victor PR #17](https://github.com/os-vector/wire-os-victor/pull/17)
+-   Global SSH key: ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
 
 ## Helpful scripts
 
@@ -72,8 +85,12 @@ cd Viccyware-oelinux
 	-	If you are debugging `victor` and want to see backtraces in /var/log/messages, run this to enable those.
 -	`ddn [on/off]`
 	-	Turns on/off DevDoNothing, which makes the bot stand still until shaken.
+-	`reonboard`
+	-	Puts him back into onboarding mode without fully clearing user data
 -	`vmesg [-c|-t] <grep args>`
 	-	A wrapper for cat/tail /var/log/messages:
+-	`temper`
+	-	Simple script which tells you CPU temps
 
 ```
 usage: vmesg [-t|-c] <grep args>
@@ -84,24 +101,26 @@ example for searching: vmesg -t -i "tflite\|gpu"
 example for whole log: vmesg -c
 ```
 
-## How this upgrade was done (all wire)
+## Proprietary software notes
 
 -	This repo contains lots of proprietary Qualcomm code and prebuilt software.
--	After a stupid amount of work, I have most HAL programs compiling with Yocto's GCC.
--	This is only for audio and BLE. For camera, I decided to just copy in those binaries (mm-camera recipe).
--	If you want to change the code in mm-anki-camera or mm-qcamera-daemon for whatever reason, you'll have to clone vicos-oelinux-nosign, change the code there, compile it in there, then pack the built binaries into a --bzip2 tar and put it into prebuilt_HY11/mm-camera.
-	-	Why am I not having Yocto build them? This is because I would have to add ~2GB of code to the repo, I would have to figure out how to get Qualcomm's ancient "SDLLVM" compiler working, and because the binaries are stable enough.
-	-	UPDATE: some BLE binaries are being copied in now, too. explained later
+-	After a stupid amount of work, I have most HAL programs compiling with Yocto's GCC 15. It wasn't terribly difficult since it's generally all autotools, but some jank is still involved, and it was still time-consuming.
+-	The camera programs and *some* of the BLE programs are being copied in rather than compiled.
+	-	Why not compile camera programs? Because I would have to add 2GB to the repo and figure out how to use the weird Qualcomm-specific toolchain.
+	-	Why not compile those BLE programs? `ankibluetoothd` and `hci_qcomm_init` are able to compile under GCC 15, but there is some weird low-level issue which makes them unable to properly communicate with a BLE library. So, for now, I am just copying pre-compiled ones in. I will probably try to fix this at some point.
+
+## How this upgrade was done
+
 -	Much work upgrading Yocto recipes.
--	All of the software is compiling with Yocto's GCC 14 or the Clang 18.1.8 vicos-sdk toolchain, with a couple of tiny exceptions.
--	These exceptions include mm-anki-camera, mm-qcamera-daemon, ankibluetoothd, and hci_qcomm_init. They are able to compile under GCC 14, but there's a very low level issue which I haven't been able to figure out as of yet. I am copying prebuilt ones in for now.
--	Some recipes are still somewhat old - these include wpa_supplicant and connman (I had issues with SAE)
+-	All of the software is compiling with Yocto's GCC 15 or the Clang 18.1.8 vicos-sdk toolchain, with a couple of tiny exceptions.
+-	Some recipes are still somewhat old - these include wpa_supplicant and connman (I had issues with SAE - he's able to recognize SAE networks, but his WLAN driver and kernel don't know how to actually connect to it, and I was unable to disable it in modern wpa_supplicant and connman)
 
-## Viccyware was made possible though the work of some amazing community members
 
-- [Wire](https://github.com/kercre123)
-- [Yrekcaz](https://github.com/Yrekcaz)
-- [Froggitti](https://github.com/froggitti)
-- [ThommoMC](https://github.com/ThommoMC)
-- [Gaming Time](https://github.com/gamingtimevr)
-- [Raj-jyot Deol / Switch_modder](https://github.com/Switch-modder)
+## Contributors
+
+<a href="https://github.com/The-Viccyware-Group/Viccyware-oelinux/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=The-Viccyware-Group/Viccyware-oelinux" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
+

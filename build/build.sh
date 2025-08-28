@@ -6,12 +6,11 @@ set -e
 # 1. -au: enable auto-updates
 
 # Hidden env vars:
-# 1. I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE: set to 1 if you want to inhibit the -au interaction
+# 1. AUTO_UPDATE: set to 1 if you want to inhibit the -au interaction
 
 CREATOR="The Viccyware Group"
 
-CURRENT_CONTAINER_NAME="vic-yocto-builder-6"
-OLD_CONTAINER_NAME="vic-yocto-builder-5"
+CURRENT_CONTAINER_NAME="vic-yocto-builder-7"
 
 function usage() {
     echo "$1"
@@ -60,8 +59,8 @@ function check_sign_ota() {
 }
 
 function are_you_wire() {
-	if [[ "${I_AM_THE_CREATOR_AND_WANT_TO_MAKE_THE_BUILD_AUTO_UPDATE}" != "1" ]]; then
-		echo "Are you part of the $CREATOR?"
+	if [[ "${AUTO_UPDATE}" != "1" ]]; then
+		echo "Are you $CREATOR?"
 		read -p "(y/n): " yn
 		case $yn in
 			[Yy]* ) echo "Cool. Wire is stupid btw!" ;;
@@ -109,6 +108,11 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+if [[ "${AUTO_UPDATE}" == "1" ]]; then
+	echo "Build will auto-update (env var set)"
+	AUTO_UPDATE=1
+fi
+
 is_victor_there_and_compatible
 
 if [[ "$BOT_TYPE" != "oskr" && "$BOT_TYPE" != "dev" && "$BOT_TYPE" != "prod" && "$BOT_TYPE" != "devcloudless" ]]; then
@@ -140,9 +144,7 @@ echo "All checks passed. Building."
 mkdir -p build/cache
 mkdir -p build/gocache
 mkdir -p build/usercache
-
-echo "Getting deps (if needed)..."
-./build/deps.sh
+mkdir -p anki-deps
 
 rm -rf poky/build/tmp-glibc/deploy/images/apq8009-robot-robot-perf/apq8009-robot-sysfs.ext4
 
@@ -186,19 +188,19 @@ if [[ $DO_SIGN == 1 ]]; then
     export DO_SIGN=$DO_SIGN
 fi
 
-if [[ ! -z $(docker images -q ${OLD_CONTAINER_NAME}) ]]; then
-	echo "Purging old docker containers... this might take a while"
-	docker ps -a --filter "ancestor=${OLD_CONTAINER_NAME}" -q | xargs -r docker rm -f
-	docker rmi -f $(docker images --filter "reference=${OLD_CONTAINER_NAME}*" --format '{{.ID}}')
-	#echo
-	#echo -e "\033[5m\033[1m\033[31mOld Docker builder detected on system. If you have built victor or wire-os many times, it is recommended you run:\033[0m"
-	#echo
-	#echo -e "\033[1m\033[36mdocker system prune -a --volumes\033[0m"
-	#echo
-	#echo -e "\033[32mPrevious versions of wire-os did not include a --rm flag in the docker run command. This means you probably have wasted space which can be cleared out with the above command.\033[0m"
-	#echo -e "\033[32mContinuing in 10 seconds...\033[0m"
-	#sleep 10
-fi
+# if [[ ! -z $(docker images -q ${OLD_CONTAINER_NAME}) ]]; then
+# 	echo "Purging old docker containers... this might take a while"
+# 	docker ps -a --filter "ancestor=${OLD_CONTAINER_NAME}" -q | xargs -r docker rm -f
+# 	docker rmi -f $(docker images --filter "reference=${OLD_CONTAINER_NAME}*" --format '{{.ID}}')
+# 	#echo
+# 	#echo -e "\033[5m\033[1m\033[31mOld Docker builder detected on system. If you have built victor or wire-os many times, it is recommended you run:\033[0m"
+# 	#echo
+# 	#echo -e "\033[1m\033[36mdocker system prune -a --volumes\033[0m"
+# 	#echo
+# 	#echo -e "\033[32mPrevious versions of wire-os did not include a --rm flag in the docker run command. This means you probably have wasted space which can be cleared out with the above command.\033[0m"
+# 	#echo -e "\033[32mContinuing in 10 seconds...\033[0m"
+# 	#sleep 10
+# fi
 
 if [[ -z $(docker images -q ${CURRENT_CONTAINER_NAME}) ]]; then
 	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t ${CURRENT_CONTAINER_NAME} build/

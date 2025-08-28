@@ -220,7 +220,7 @@ function build-prod() {
 }
 
 # cleared every time
-cleanList=(victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf extra-conf vic-engine update-os update-engine wireutils wlan-opensource wcnss base-passwd mm-camera initscript-anki rebooter adreno adsprpc)
+cleanList=(victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf extra-conf vic-engine update-os update-engine wireutils wlan-opensource wcnss base-passwd mm-camera initscript-anki rebooter adreno adsprpc vic-gateway base-files)
 
 function clean-oskr() {
   unset_bb_env
@@ -269,6 +269,10 @@ function wire-clean() {
 		echo "Cleaning file detected, cleaning: $(cat ${WS}/wire-cleaning)"
 		cdbitbake -c cleanall $(cat ${WS}/wire-cleaning)
 		rm -f ${WS}/wire-cleaning
+	fi
+	if [[ "$(ls ${WS}/poky/build/downloads)" == *'release.2.41.master'* ]]; then
+		echo "Walnascar build detected - removing build folders..."
+		sudo rm -rf ${WS}/poky/build/cache ${WS}/poky/build/sstate-cache ${WS}/poky/build/tmp-glibc ${WS}/poky/build/downloads
 	fi
 }
 
