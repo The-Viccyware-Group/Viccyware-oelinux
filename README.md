@@ -51,8 +51,8 @@ cd Viccyware-oelinux
 
 -   New OS base
     -   Yocto Whinlatter rather than Jethro
-        -   glibc 2.42 (latest as of 08-2025)
--   `victor` software compiled with Clang 18.1.8 rather than 5.0.1
+        -   glibc 2.42 (latest as of 09-2025)
+-   `victor` software compiled with Clang 20.1.8 rather than 5.0.1
     -	The code is properly fixed so there are no compile warnings
 -   Rainbow eye color
     -   Can be activated in :8888/demo.html
@@ -79,10 +79,8 @@ cd Viccyware-oelinux
         -  How to activate: [wire-os-victor PR #17](https://github.com/os-vector/wire-os-victor/pull/17)
 -   Global SSH key: ([ssh_root_key](https://raw.githubusercontent.com/kercre123/unlocking-vector/refs/heads/main/ssh_root_key))
 
-## Helpful scripts
+## Helpful scripts / aliases
 
--	`anki-debug`
-	-	If you are debugging `victor` and want to see backtraces in /var/log/messages, run this to enable those.
 -	`ddn [on/off]`
 	-	Turns on/off DevDoNothing, which makes the bot stand still until shaken.
 -	`reonboard`
@@ -91,6 +89,11 @@ cd Viccyware-oelinux
 	-	A wrapper for cat/tail /var/log/messages:
 -	`temper`
 	-	Simple script which tells you CPU temps
+-	`voff`
+	-	Shuts the bot off, closes your SSH session before doing so
+		-	(the shutdown command just restarts the bot, this is different)
+-	`mrw`
+	-	mount -o rw,remount /
 
 ```
 usage: vmesg [-t|-c] <grep args>
@@ -112,7 +115,7 @@ example for whole log: vmesg -c
 ## How this upgrade was done
 
 -	Much work upgrading Yocto recipes.
--	All of the software is compiling with Yocto's GCC 15 or the Clang 18.1.8 vicos-sdk toolchain, with a couple of tiny exceptions.
+-	All of the software is compiling with Yocto's GCC 15 or the Clang 20.1.8 vicos-sdk toolchain, with a couple of tiny exceptions.
 -	Some recipes are still somewhat old - these include wpa_supplicant and connman (I had issues with SAE - he's able to recognize SAE networks, but his WLAN driver and kernel don't know how to actually connect to it, and I was unable to disable it in modern wpa_supplicant and connman)
 
 
