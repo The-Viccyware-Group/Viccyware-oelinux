@@ -1,23 +1,21 @@
-# WireOS
+# Viccyware-oelinux
 
-**The main repo for WireOS.**
+The main repo for building Viccyware otas.
 
-WireOS serves as a nice, stable, and maintained base for Vector CFW.
-
-This builds the OS, the /anki programs (`wire-os-victor`), and puts it all into a final OTA. This repo can be thought of as `wire-os-oelinux`.
+This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 
 ## Submodules
 
 - /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (master)
 - /poky/meta-openembedded -> [openembedded/meta-openembedded](https://github.com/openembedded/meta-openembedded) (master)
-- /anki/victor -> [wire-os-victor](https://github.com/os-vector/wire-os-victor) (main)
+- /anki/victor -> [Viccyware](https://github.com/The-Viccyware-Group/Viccyware) (Viccyware-tester)
   - Where all the personality code lives - the README there has more info
-- /anki/wired -> [wired](https://github.com/os-vector/wired) (main)
+- /anki/wired -> [wired](https://github.com/The-Viccyware-Group/wired) (main)
   - Little webserver with configuration options
 
 ## Prebuilt OTA:
 
-WireOS is in the dropdown box in [https://devsetup.froggitti.net/](https://devsetup.froggitti.net/). Put your unlocked bot into recovery mode (hold the button for 15 seconds on the charger), head to the site, choose wireOS, then go through the process.
+Viccyware is in the dropdown box in [https://devsetup.froggitti.net/](https://devsetup.froggitti.net/). Put your unlocked bot into recovery mode (hold the button for 15 seconds on the charger), head to the site, choose Viccyware, then go through the process.
 
 ## Build
 
@@ -38,8 +36,8 @@ sudo chmod 660 /var/run/docker.sock
 3. Clone and build:
 
 ```
-git clone https://github.com/os-vector/wire-os --recurse-submodules
-cd wire-os
+git clone --recursive https://github.com/The-Viccyware-Group/Viccyware-oelinux/ 
+cd Viccyware-oelinux
 ./build/build.sh -bt <dev/oskr> -bp <boot-passwd> -v <build-increment>
 # boot password not required for dev
 # example: ./build/build.sh -bt dev -v 1
@@ -47,18 +45,7 @@ cd wire-os
 ```
 
 ### Where is my OTA?
-
-`./_build/3.0.1.1.ota`
-
-## Development path
-
-- **Most work should be done in `wire-os-victor`. Generally, that's all you need to have cloned. That can be worked on on a less beefy Linux laptop or M-series MacBook. If you have a modern base WireOS OTA installed; you can clone `wire-os-victor`, make changes, build that standalone, and deploy that to your robot. This repo is more meant to be cloned to a build server, and built less often.**
-
-##  Donate
-
-If you want to :P
-
-[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/kercre123)
+`./_build/Viccyware-0.5.(x).ota`
 
 ## Differences compared to normal Vector FW
 
@@ -130,3 +117,13 @@ example for whole log: vmesg -c
 -	Much work upgrading Yocto recipes.
 -	All of the software is compiling with Yocto's GCC 15 or the Clang 20.1.8 vicos-sdk toolchain, with a couple of tiny exceptions.
 -	Some recipes are still somewhat old - these include wpa_supplicant and connman (I had issues with SAE - he's able to recognize SAE networks, but his WLAN driver and kernel don't know how to actually connect to it, and I was unable to disable it in modern wpa_supplicant and connman)
+
+
+## Contributors
+
+<a href="https://github.com/The-Viccyware-Group/Viccyware-oelinux/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=The-Viccyware-Group/Viccyware-oelinux" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
+
