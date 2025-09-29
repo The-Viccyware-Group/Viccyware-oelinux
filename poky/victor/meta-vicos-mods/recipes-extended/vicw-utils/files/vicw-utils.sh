@@ -4,12 +4,12 @@ VOLUME_FILE="/data/vicw-volume"
 
 print_usage() {
     echo "Usage: $0 volume <LEVEL>"
-    echo "  LEVEL: MUTE, LOW, MEDIUM, MEDIUM_HIGH, HIGH"
+    echo "  LEVEL: MUTE, LOW, MEDIUM_LOW, MEDIUM, MEDIUM_HIGH, HIGH"
 }
 
 is_valid_volume() {
     case "$1" in
-        MUTE|LOW|MEDIUM|MEDIUM_HIGH|HIGH)
+        MUTE|LOW|MEDIUM_LOW|MEDIUM|MEDIUM_HIGH|HIGH)
             return 0
             ;;
         *)
