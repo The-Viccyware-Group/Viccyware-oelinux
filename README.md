@@ -6,7 +6,7 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 
 ## Vector
 
-[Vector is a cute, animated home robot created by Anki](https://www.youtube.com/watch?v=oxla4__lWbA). They went under in 2019. The assets were bought up by Digital Dream Labs in 2020. Eventually, Vector's code leaked, and soon after that, a universal Vector unlocking tool was made available.
+[Vector is a cute, animated home robot created by Anki](https://www.youtube.com/watch?v=Qy2Z2TWAt6A). They went under in 2019. The assets were bought up by Digital Dream Labs in 2020. Eventually, Vector's code leaked, and soon after that, a universal Vector unlocking tool was made available.
 
 ## Yocto
 
