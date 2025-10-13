@@ -4,6 +4,16 @@ The main repo for building Viccyware otas.
 
 This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 
+## Vector
+
+[Vector is a cute, animated home robot created by Anki](https://www.youtube.com/watch?v=Qy2Z2TWAt6A). They went under in 2019. The assets were bought up by Digital Dream Labs in 2020. Eventually, Vector's code leaked, and soon after that, a universal Vector unlocking tool was made available.
+
+## Yocto
+
+Yocto is the toolkit this repo uses to create OS images. Yocto, in of itself, is not a distribution. It's a toolkit which helps one create replicable OS builds with only little difficulty.
+
+This is based off of the leaked [vicos-oelinux](https://github.com/kercre123/vicos-oelinux). Qualcomm provided Anki with a Yocto BSP - that's what that is. It is terribly old. I updated everything so it works with the latest Yocto tools.
+
 ## Submodules
 
 - /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (master)
@@ -45,7 +55,11 @@ cd Viccyware-oelinux
 ```
 
 ### Where is my OTA?
-`./_build/Viccyware-0.5.(x).ota`
+`./_build/Viccyware-0.6.(x).ota`
+
+## Development path
+
+- **Most work should be done in `Viccyware`. Generally, that's all you need to have cloned. That can be worked on on a less beefy Linux laptop or M-series MacBook. If you have a modern base WireOS OTA installed; you can clone `wire-os-victor`, make changes, build that standalone, and deploy that to your robot. This repo is more meant to be cloned to a build server, and built less often.**
 
 ## Differences compared to normal Vector FW
 
@@ -86,7 +100,7 @@ cd Viccyware-oelinux
 -	`reonboard`
 	-	Puts him back into onboarding mode without fully clearing user data
 -	`vmesg [-c|-t] <grep args>`
-	-	A wrapper for cat/tail /var/log/messages:
+	-	A wrapper for cat/tail /var/log/messages.
 -	`temper`
 	-	Simple script which tells you CPU temps
 -	`voff`
@@ -94,15 +108,6 @@ cd Viccyware-oelinux
 		-	(the shutdown command just restarts the bot, this is different)
 -	`mrw`
 	-	mount -o rw,remount /
-
-```
-usage: vmesg [-t|-c] <grep args>
-this is a helper tool for viewing Vector's /var/log/messages
-if no grep args are provided, the tailed/whole log will be given
--t = tail (-f), -c = cat
-example for searching: vmesg -t -i "tflite\|gpu"
-example for whole log: vmesg -c
-```
 
 ## Proprietary software notes
 
