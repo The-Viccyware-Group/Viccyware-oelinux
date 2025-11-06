@@ -29,7 +29,13 @@ Viccyware is in the dropdown box in [https://devsetup.froggitti.net/](https://de
 
 ## Build
 
+- WireOS can be built in Docker or on bare metal.
 - Note: you will need a somewhat beefy **x86_64 Linux** machine with at least 16GB of RAM and 100GB of free space.
+    -   Yocto builds every single part of the OS from scratch, which is why it is so space-consuming.
+
+### Build in Docker (recommended)
+
+- **You do not need to make a container yourself. Just follow these steps. The build script handles it for you.**
 
 1. [Install Docker](https://docs.docker.com/engine/install/), git, and wget.
 
@@ -46,6 +52,7 @@ sudo chmod 660 /var/run/docker.sock
 3. Clone and build:
 
 ```
+<<<<<<< HEAD
 git clone --recursive https://github.com/The-Viccyware-Group/Viccyware-oelinux/ 
 cd Viccyware-oelinux
 ./build/build.sh -bt <dev/oskr> -bp <boot-passwd> -v <build-increment>
@@ -56,6 +63,66 @@ cd Viccyware-oelinux
 
 ### Where is my OTA?
 `./_build/Viccyware-0.6.(x).ota`
+=======
+git clone https://github.com/os-vector/wire-os --recurse-submodules
+cd wire-os
+./build/build.sh -bt dev -v <build-increment>
+# build-increment can be any number you want. it will be the final number of the OTA: 3.0.1.<incrememnt>.ota
+```
+
+### Build on bare metal
+
+1. Run a [distribution supported by Yocto](https://docs.yoctoproject.org/dev/ref-manual/system-requirements.html#supported-linux-distributions).
+
+2. Install the required packages:
+
+```
+# Debian/Ubuntu
+sudo apt-get install -y sudo build-essential chrpath cpio debianutils \
+    diffstat expect file gcc git iputils-ping libacl1 \
+    locales python3 python3-git python3-jinja2 python3-pexpect \
+    python3-subunit socat texinfo unzip wget xz-utils zstd git-core \
+    gnupg flex bison gperf build-essential zip curl zlib1g-dev \
+    libncurses5-dev x11proto-core-dev libx11-dev libz-dev \
+    libxml-simple-perl libc6-dev libgl1-mesa-dev tofrodos libxml2-utils \
+    xsltproc genisoimage gawk chrpath texinfo p7zip-full \
+    android-sdk-libsparse-utils ruby subversion libssl-dev \
+    protobuf-compiler pkg-config nano libtinfo5 ninja-build clang ccache \
+    libc++-dev rsync cmake automake libtool
+```
+
+3. Clone and build (***with -nd flag***):
+```
+git clone https://github.com/os-vector/wire-os --recurse-submodules
+cd wire-os
+./build/build.sh -nd -bt dev -v <build-increment>
+# build-increment can be any number you want. it will be the final number of the OTA: 3.0.1.<incrememnt>.ota
+```
+
+### Where is my OTA?
+
+`./_build/3.0.1.<increment>.ota`
+
+## build.sh flags
+
+```
+-bt <build-type>
+    required. build-type: [dev|oskr]
+    dev is recommended. if you unlocked a bot with unlock-prod-*.ota, use that
+-v <increment>
+    required. increment: [any int 0-9999]
+    (final file will be 3.0.1.<build increment>.ota)
+-bp <password>
+    boot image signing password: [string]
+    not required for dev builds
+-nd
+    build on bare metal rather than in Docker
+-ui <ui-option>
+    use a different Yocto UI: [knotty|taskexp|taskexp_ncurses|ncurses|teamcity]
+    default is knotty. ncurses is cool but requires you to CTRL+C after completion.
+    only add this argument if you know what you are doing.
+```
+>>>>>>> 6f398e174168ef117e3a87c80fc075f6e8812800
 
 ## Development path
 
@@ -65,7 +132,7 @@ cd Viccyware-oelinux
 
 -   New OS base
     -   Yocto Whinlatter rather than Jethro
-        -   glibc 2.42 (latest as of 09-2025)
+        -   glibc 2.42 (latest as of 11-2025)
 -   `victor` software compiled with Clang 20.1.8 rather than 5.0.1
     -	The code is properly fixed so there are no compile warnings
 -   Rainbow eye color
@@ -84,10 +151,10 @@ cd Viccyware-oelinux
 -   Cat and dog detection (basic, similar to Cozmo)
 -   Smaller OTA size - a dev OTA is 153M somehow
 -   New Anki boot animation, new pre-boot-anim splash screen, rainbow backpack light animations
--   TensorFlow Lite has been updated to v2.19.0 (latest as of 07-2025)
+-   TensorFlow Lite has been updated to v2.19.0 (a modern 2025 release)
 	-  This means we can maybe leverage the GPU delegate at some point
 	-  XNNPACK - the CPU delegate - is faster than what was there before
--   OpenCV has been updated to 4.12.0 (latest as of 07-2025)
+-   OpenCV has been updated to 4.12.0 (latest as of 11-2025)
   	-  Much better SDK streaming performance
 -   [Face overlays](https://www.reddit.com/r/AnkiVector/comments/1lteb3m/_/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
         -  How to activate: [wire-os-victor PR #17](https://github.com/os-vector/wire-os-victor/pull/17)

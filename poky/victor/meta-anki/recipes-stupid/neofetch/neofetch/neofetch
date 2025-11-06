@@ -36,7 +36,7 @@ bash_version=${BASH_VERSINFO[0]:-5}
 shopt -s eval_unsafe_arith &>/dev/null
 
 sys_locale=${LANG:-C}
-XDG_CONFIG_HOME=${XDG_CONFIG_HOME:/data/.config}
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-/data/.config}
 PATH=$PATH:/usr/xpg4/bin:/usr/sbin:/sbin:/usr/etc:/usr/libexec
 reset='\e[0m'
 shopt -s nocasematch
