@@ -58,7 +58,7 @@ cd Viccyware-oelinux
 ./build/build.sh -bt <dev/oskr> -bp <boot-passwd> -v <build-increment>
 # boot password not required for dev
 # example: ./build/build.sh -bt dev -v 1
-# <build-increment> is what the last number of the version string will be - if it's 1, it will be 3.0.1.1.ota
+# <build-increment> is what the last number of the version string will be - if it's 1, it will be 0.6.0.1.ota
 ```
 
 ### Where is my OTA?
@@ -127,6 +127,10 @@ cd wire-os
 ## Development path
 
 - **Most work should be done in `Viccyware`. Generally, that's all you need to have cloned. That can be worked on on a less beefy Linux laptop or M-series MacBook. If you have a modern base WireOS OTA installed; you can clone `wire-os-victor`, make changes, build that standalone, and deploy that to your robot. This repo is more meant to be cloned to a build server, and built less often.**
+
+## Rebuilds
+
+- Wire tries to make it so whenever changes are made, you don't need to do a full rebuild; however, due to this being synced up to poky's `master` branch, behavior can be unpredictable. **Due to this, I recommend doing a full rebuild each time.** You can clean your build directory by running `sudo rm -rf poky/build/tmp-glibc poky/build/cache poky/build/sstate-cache poky/build/downloads`.
 
 ## Differences compared to normal Vector FW
 
