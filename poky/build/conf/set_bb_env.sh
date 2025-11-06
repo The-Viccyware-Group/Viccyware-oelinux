@@ -224,7 +224,7 @@ function build-dev() {
 }
 
 function build-devcloudless() {
-  build-8009-robot-perf-cloudless-image ${@}
+  build-8009-robot-perf-devcloudless-image ${@}
 }
 
 function build-oskrcloudless() {
@@ -334,6 +334,7 @@ list-build-commands()
     echo "  build-dev"
     echo "  build-oskr"
     echo "  build-devcloudless"
+    echo "  build-oskrcloudless"
     echo "  build-prod"
     echo
     echo "Use 'list-build-commands' to see this list again."
