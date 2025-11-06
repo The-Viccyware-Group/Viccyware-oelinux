@@ -235,7 +235,7 @@ function run_with_docker() {
     -v $(pwd)/build/cache:/home/$USER/.ccache \
     -v $(pwd)/build/gocache:/home/$USER/go \
     -v $(pwd)/build/usercache:/home/$USER/.cache \
-    ${CURRENT_CONTAINER_NAME} bash -c $@
+    ${CURRENT_CONTAINER_NAME} bash -c "$@"
 }
 
 FINAL_BUILD_INVOCATION="cd $(pwd)/poky && \
