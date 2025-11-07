@@ -12,28 +12,37 @@ This builds the OS, the /anki programs (`victor`), and creates a final OTA.
 
 Yocto is the toolkit this repo uses to create OS images. Yocto, in of itself, is not a distribution. It's a toolkit which helps one create replicable OS builds with only little difficulty.
 
-This is based off of the leaked [vicos-oelinux](https://github.com/kercre123/vicos-oelinux). Qualcomm provided Anki with a Yocto BSP - that's what that is. It is terribly old. I updated everything so it works with the latest Yocto tools.
+This is based off of the leaked [vicos-oelinux](https://github.com/kercre123/vicos-oelinux) repo. Qualcomm provided Anki with a Yocto BSP - that's what vicos-oelinux is. It is terribly old. I updated everything so it works with the latest Yocto layers.
 
-## Submodules
-
-- /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (master)
-- /poky/meta-openembedded -> [openembedded/meta-openembedded](https://github.com/openembedded/meta-openembedded) (master)
-- /anki/victor -> [Viccyware](https://github.com/The-Viccyware-Group/Viccyware) (Viccyware-tester)
-  - Where all the personality code lives - the README there has more info
-- /anki/wired -> [wired](https://github.com/The-Viccyware-Group/wired) (main)
-  - Little webserver with configuration options
-
-## Prebuilt OTA:
+## Prebuilt OTA
 
 Viccyware is in the dropdown box in [https://devsetup.froggitti.net/](https://devsetup.froggitti.net/). Put your unlocked bot into recovery mode (hold the button for 15 seconds on the charger), head to the site, choose Viccyware, then go through the process.
 
+The actual latest dev OTA is available here: [http://ota.pvic.xyz/vic/latest/dev.ota](http://ota.pvic.xyz/vic/latest/dev.ota)
+
 ## Build
 
-- WireOS can be built in Docker or on bare metal.
-- Note: you will need a somewhat beefy **x86_64 Linux** machine with at least 16GB of RAM and 100GB of free space.
-    -   Yocto builds every single part of the OS from scratch, which is why it is so space-consuming.
+- WireOS must be built on Linux, either x86_64 or aarch64.
+- Minimum specs:
+    -   x86_64 or aarch64 CPU
+    -   4 cores
+    -   8 GB of RAM
+    -   100 GB of free storage
+- Recommended specs:
+    -   x86_64 CPU
+    -   8 or more cores
+    -   16 or more GB of RAM
+    -   200 or more GB of free storage
+- A minimum spec machine might take up to 3 hours to build a full OTA. A beefy one takes around half an hour.
+- It is recommended to build WireOS on an x86_64 CPU via the Docker method.
+- If you want to build on aarch64, you have to go the bare metal route. The Docker method cannot be used for aarch64 build machines yet.
+- **Asahi Linux cannot be used to build WireOS.** 99% of the build happens, but it fails during one of the final in-image configuration stages due to an Asahi-specific issue with `qemu-arm`.
+    -   I had success building WireOS in a Debian VM on my M3 Macbook Air using UTM. A QEMU+KVM VM in Asahi would probably work too.
+- **Click an option below.**
 
-### Build in Docker (recommended)
+<details>
+<summary><strong>Build in Docker (recommended) (x86_64 only)</strong></summary>
+<br />
 
 - **You do not need to make a container yourself. Just follow these steps. The build script handles it for you.**
 
@@ -52,7 +61,6 @@ sudo chmod 660 /var/run/docker.sock
 3. Clone and build:
 
 ```
-<<<<<<< HEAD
 git clone --recursive https://github.com/The-Viccyware-Group/Viccyware-oelinux/ 
 cd Viccyware-oelinux
 ./build/build.sh -bt <dev/oskr> -bp <boot-passwd> -v <build-increment>
@@ -61,33 +69,31 @@ cd Viccyware-oelinux
 # <build-increment> is what the last number of the version string will be - if it's 1, it will be 0.6.0.1.ota
 ```
 
-### Where is my OTA?
-`./_build/Viccyware-0.6.(x).ota`
-=======
-git clone https://github.com/os-vector/wire-os --recurse-submodules
-cd wire-os
-./build/build.sh -bt dev -v <build-increment>
-# build-increment can be any number you want. it will be the final number of the OTA: 3.0.1.<incrememnt>.ota
-```
+</details>
 
-### Build on bare metal
+<details>
+<summary><strong>Build on bare metal (x86_64 and aarch64)</strong></summary>
+
+- Note: Yocto flips out if you try to use Python via a pyenv. Make sure you are using the OS's native Python only.
 
 1. Run a [distribution supported by Yocto](https://docs.yoctoproject.org/dev/ref-manual/system-requirements.html#supported-linux-distributions).
+    -   I recommend Debian 12 and up or Ubuntu 22.04 and up. Anything in this list with a glibc version 2.35 or above should work.
+    -   Arch Linux seems to work too.
 
 2. Install the required packages:
 
 ```
 # Debian/Ubuntu
-sudo apt-get install -y sudo build-essential chrpath cpio debianutils \
-    diffstat expect file gcc git iputils-ping libacl1 \
+sudo apt install -y build-essential chrpath cpio debianutils \
+    diffstat expect file git iputils-ping libacl1 \
     locales python3 python3-git python3-jinja2 python3-pexpect \
-    python3-subunit socat texinfo unzip wget xz-utils zstd git-core \
-    gnupg flex bison gperf build-essential zip curl zlib1g-dev \
-    libncurses5-dev x11proto-core-dev libx11-dev libz-dev \
+    python3-subunit socat unzip wget xz-utils zstd \
+    gnupg flex bison gperf zip curl zlib1g-dev \
+    libncurses5-dev x11proto-core-dev libx11-dev \
     libxml-simple-perl libc6-dev libgl1-mesa-dev tofrodos libxml2-utils \
-    xsltproc genisoimage gawk chrpath texinfo p7zip-full \
+    xsltproc genisoimage gawk p7zip-full \
     android-sdk-libsparse-utils ruby subversion libssl-dev \
-    protobuf-compiler pkg-config nano libtinfo5 ninja-build clang ccache \
+    protobuf-compiler pkg-config nano ninja-build clang ccache \
     libc++-dev rsync cmake automake libtool
 ```
 
@@ -98,6 +104,8 @@ cd wire-os
 ./build/build.sh -nd -bt dev -v <build-increment>
 # build-increment can be any number you want. it will be the final number of the OTA: 3.0.1.<incrememnt>.ota
 ```
+
+</details>
 
 ### Where is my OTA?
 
@@ -122,7 +130,9 @@ cd wire-os
     default is knotty. ncurses is cool but requires you to CTRL+C after completion.
     only add this argument if you know what you are doing.
 ```
->>>>>>> 6f398e174168ef117e3a87c80fc075f6e8812800
+
+### Where is my OTA?
+`./_build/Viccyware-0.6.(x).ota`
 
 ## Development path
 
@@ -187,6 +197,7 @@ cd wire-os
 -	The camera programs and *some* of the BLE programs are being copied in rather than compiled.
 	-	Why not compile camera programs? Because I would have to add 2GB to the repo and figure out how to use the weird Qualcomm-specific toolchain.
 	-	Why not compile those BLE programs? `ankibluetoothd` and `hci_qcomm_init` are able to compile under GCC 15, but there is some weird low-level issue which makes them unable to properly communicate with a BLE library. So, for now, I am just copying pre-compiled ones in. I will probably try to fix this at some point.
+-   The kernel is still msm-3.18. Mainline might be possible. I was able to boot `msm8916-mainline` on a Vector and get some hardware peripherals working, but some fundamental ones (camera, Wi-Fi) will take quite a bit of work.
 
 ## How this upgrade was done
 
