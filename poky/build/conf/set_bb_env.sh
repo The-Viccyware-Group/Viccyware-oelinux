@@ -363,7 +363,7 @@ export TEMPLATECONF="${WS}/poky/victor/meta-qcom/conf/templates/msm"
 # going to source the OE build environment setup script they provided.
 # This will dump the user in ${WS}/yocto/build, ready to run the
 # convienence function or straight up bitbake commands.
-. ${WS}/poky/poky/oe-init-build-env
+. ${WS}/poky/openembedded-core/oe-init-build-env
 
 # Let bitbake use the following env-vars as if they were pre-set bitbake ones.
 # (BBLAYERS is explicitly blocked from this within OE-Core itself, though...)
