@@ -1,9 +1,9 @@
 #!/bin/bash
 
 cd anki/victor
-git pull origin main
+git pull origin Viccyware-tester
 cd EXTERNALS
-git pull origin main
+git pull origin viccyware
 cd ../../vic-cloudless
 git pull origin main
 cd ../wired

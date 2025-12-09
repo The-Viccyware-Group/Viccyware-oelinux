@@ -82,19 +82,9 @@ cd Viccyware-oelinux
 
 2. Install the required packages:
 
+- Debian/Ubuntu
 ```
-# Debian/Ubuntu
-sudo apt install -y build-essential chrpath cpio debianutils \
-    diffstat expect file git iputils-ping libacl1 \
-    locales python3 python3-git python3-jinja2 python3-pexpect \
-    python3-subunit socat unzip wget xz-utils zstd \
-    gnupg flex bison gperf zip curl zlib1g-dev \
-    libncurses5-dev x11proto-core-dev libx11-dev \
-    libxml-simple-perl libc6-dev libgl1-mesa-dev tofrodos libxml2-utils \
-    xsltproc genisoimage gawk p7zip-full \
-    android-sdk-libsparse-utils ruby subversion libssl-dev \
-    protobuf-compiler pkg-config nano ninja-build clang ccache \
-    libc++-dev rsync cmake automake libtool
+sudo apt install -y build-essential chrpath cpio debianutils diffstat expect file git iputils-ping libacl1 locales python3 python3-git python3-jinja2 python3-pexpect python3-subunit socat unzip wget xz-utils zstd gnupg flex bison gperf zip curl zlib1g-dev libncurses5-dev x11proto-core-dev libx11-dev libxml-simple-perl libc6-dev libgl1-mesa-dev tofrodos libxml2-utils xsltproc genisoimage gawk p7zip-full android-sdk-libsparse-utils ruby subversion libssl-dev protobuf-compiler pkg-config nano ninja-build clang ccache libc++-dev rsync cmake automake libtool
 ```
 
 3. Clone and build (***with -nd flag***):
