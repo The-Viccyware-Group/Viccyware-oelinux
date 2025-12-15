@@ -144,7 +144,7 @@ if [[ "$DO_SIGN" == 1 ]]; then
     check_sign_ota
 fi
 
-if [[ "$BOT_TYPE" == "oskr" && "$BOT_TYPE" == "oskrcloudless" ]]; then
+if [[ "$BOT_TYPE" == "oskr" || "$BOT_TYPE" == "oskrcloudless" ]]; then
     check_sign_oskr
 fi
 
