@@ -16,9 +16,9 @@ This is based off of the leaked [vicos-oelinux](https://github.com/kercre123/vic
 
 ## Prebuilt OTA
 
-Viccyware is in the dropdown box in [https://devsetup.froggitti.net/](https://devsetup.froggitti.net/). Put your unlocked bot into recovery mode (hold the button for 15 seconds on the charger), head to the site, choose Viccyware, then go through the process.
+Viccyware is available on [https://websetup.froggitti.net](websetup.froggitti.net) under the Custom Firmware stack. Put your unlocked bot into recovery mode (hold the button for 15 seconds on the charger), head to the site, choose the Custom Firmware stack, then go through the process.
 
-The actual latest dev OTA is available here: [http://ota.pvic.xyz/vic/latest/dev.ota](http://ota.pvic.xyz/vic/latest/dev.ota)
+The actual latest dev OTA is available here: [http://ota-vicw.froggitti.net/vic/latest/dev.ota](http://ota-vicw.froggitti.net/vic/latest/dev.ota)
 
 ## Build
 
