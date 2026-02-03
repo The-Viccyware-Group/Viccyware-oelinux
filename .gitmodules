@@ -4,7 +4,7 @@
 [submodule "poky/meta-openembedded"]
 	path = poky/meta-openembedded
 	url = https://github.com/openembedded/meta-openembedded
-	branch = walnascar
+	branch = whinlatter
 [submodule "anki/wired"]
 	path = anki/wired
         url = https://github.com/The-Viccyware-Group/wired-viccyware
@@ -17,3 +17,6 @@
 [submodule "poky/openembedded-core"]
 	path = poky/openembedded-core
 	url = https://github.com/openembedded/openembedded-core.git
+[submodule "external/purplpkg"]
+	path = external/purplpkg
+	url = https://github.com/purpl-org/purplpkg
