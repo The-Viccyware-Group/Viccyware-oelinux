@@ -219,7 +219,7 @@ function build-prod() {
 }
 
 # cleared every time
-cleanList=(victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image system-conf system-core extra-conf vic-engine update-os update-engine wireutils wlan-opensource wcnss base-passwd mm-camera initscript-anki rebooter adreno adsprpc vic-anim vic-switchboard vic-gateway-cert base-files libpvictor syslog-ng)
+cleanList=(victor wired vic-cloud core-image-anki-initramfs rampost anki-version machine-robot-image extra-conf vic-engine vic-robot update-os update-engine wireutils wcnss mm-camera initscript-anki rebooter adreno adsprpc vic-anim vic-switchboard vic-gateway-cert base-files libpvictor fake-hwclock purplpkg)
 
 function clean-oskr() {
   unset_bb_env
@@ -333,7 +333,7 @@ export TEMPLATECONF="${WS}/poky/victor/meta-qcom/conf/templates/msm"
 # going to source the OE build environment setup script they provided.
 # This will dump the user in ${WS}/yocto/build, ready to run the
 # convienence function or straight up bitbake commands.
-. ${WS}/poky/poky/oe-init-build-env
+. ${WS}/poky/openembedded-core/oe-init-build-env
 
 # Let bitbake use the following env-vars as if they were pre-set bitbake ones.
 # (BBLAYERS is explicitly blocked from this within OE-Core itself, though...)

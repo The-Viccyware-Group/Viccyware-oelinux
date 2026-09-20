@@ -2,7 +2,7 @@
 
 **The main repo for WireOS.**
 
-WireOS serves as a nice, stable, and maintained base for Vector CFW.
+WireOS serves as a nice, stable, and maintained base for custom Anki Vector firmware.
 
 This builds the OS, the /anki programs (`wire-os-victor`), and puts it all into a final OTA. This repo can be thought of as `wire-os-oelinux`.
 
@@ -14,28 +14,37 @@ This builds the OS, the /anki programs (`wire-os-victor`), and puts it all into 
 
 Yocto is the toolkit this repo uses to create OS images. Yocto, in of itself, is not a distribution. It's a toolkit which helps one create replicable OS builds with only little difficulty.
 
-This is based off of the leaked [vicos-oelinux](https://github.com/kercre123/vicos-oelinux). Qualcomm provided Anki with a Yocto BSP - that's what that is. It is terribly old. I updated everything so it works with the latest Yocto tools.
+This is based off of the leaked [vicos-oelinux](https://github.com/kercre123/vicos-oelinux) repo. Qualcomm provided Anki with a Yocto BSP - that's what vicos-oelinux is. It is terribly old. I updated everything so it works with the latest Yocto layers.
 
-## Submodules
+## Prebuilt OTA
 
-- /poky/poky -> [yoctoproject/poky](https://github.com/yoctoproject/poky) (master)
-- /poky/meta-openembedded -> [openembedded/meta-openembedded](https://github.com/openembedded/meta-openembedded) (master)
-- /anki/victor -> [wire-os-victor](https://github.com/os-vector/wire-os-victor) (main)
-  - Where all the personality code lives - the README there has more info
-- /anki/wired -> [wired](https://github.com/os-vector/wired) (main)
-  - Little webserver with configuration options
+WireOS is in the Custom Firmware category of [https://websetup.froggitti.net/](https://websetup.froggitti.net/). Put your unlocked bot into recovery mode (hold the button for 15 seconds on the charger), head to the site, choose the Custom Firmware stack, connect to the bot, choose WireOS, then go through the process.
 
-## Prebuilt OTA:
-
-WireOS is in the dropdown box in [https://devsetup.froggitti.net/](https://devsetup.froggitti.net/). Put your unlocked bot into recovery mode (hold the button for 15 seconds on the charger), head to the site, choose wireOS, then go through the process.
+The actual latest dev OTA is available here: [http://ota.pvic.xyz/vic/latest/dev.ota](http://ota.pvic.xyz/vic/latest/dev.ota)
 
 ## Build
 
-- WireOS can be built in Docker or on bare metal.
-- Note: you will need a somewhat beefy **x86_64 Linux** machine with at least 16GB of RAM and 100GB of free space.
-    -   Yocto builds every single part of the OS from scratch, which is why it is so space-consuming.
+- WireOS must be built on Linux, either x86_64 or aarch64.
+- Minimum specs:
+    -   x86_64 or aarch64 CPU
+    -   4 cores
+    -   8 GB of RAM
+    -   100 GB of free storage
+- Recommended specs:
+    -   x86_64 CPU
+    -   8 or more cores
+    -   16 or more GB of RAM
+    -   200 or more GB of free storage
+- A minimum spec machine might take up to 3 hours to build a full OTA. A beefy one takes around half an hour.
+- It is recommended to build WireOS on an x86_64 CPU via the Docker method.
+- If you want to build on aarch64, you have to go the bare metal route. The Docker method cannot be used for aarch64 build machines yet.
+- **Asahi Linux cannot be used to build WireOS.** 99% of the build happens, but it fails during one of the final in-image configuration stages due to an Asahi-specific issue with `qemu-arm`.
+    -   I had success building WireOS in a Debian VM on my M3 Macbook Air using UTM. A QEMU+KVM VM in Asahi would probably work too.
+- **Click an option below.**
 
-### Build in Docker (recommended)
+<details>
+<summary><strong>Build in Docker (recommended) (x86_64 only)</strong></summary>
+<br />
 
 - **You do not need to make a container yourself. Just follow these steps. The build script handles it for you.**
 
@@ -60,25 +69,22 @@ cd wire-os
 # build-increment can be any number you want. it will be the final number of the OTA: 3.0.1.<incrememnt>.ota
 ```
 
-### Build on bare metal
+</details>
+
+<details>
+<summary><strong>Build on bare metal (x86_64 and aarch64)</strong></summary>
+
+- Note: Yocto flips out if you try to use Python via a pyenv. Make sure you are using the OS's native Python only.
 
 1. Run a [distribution supported by Yocto](https://docs.yoctoproject.org/dev/ref-manual/system-requirements.html#supported-linux-distributions).
+    -   I recommend Debian 12 and up or Ubuntu 22.04 and up. Anything in this list with a glibc version 2.35 or above should work.
+    -   Arch Linux seems to work too.
 
 2. Install the required packages:
 
+- Debian/Ubuntu
 ```
-# Debian/Ubuntu
-sudo apt-get install -y sudo build-essential chrpath cpio debianutils \
-    diffstat expect file gcc git iputils-ping libacl1 \
-    locales python3 python3-git python3-jinja2 python3-pexpect \
-    python3-subunit socat texinfo unzip wget xz-utils zstd git-core \
-    gnupg flex bison gperf build-essential zip curl zlib1g-dev \
-    libncurses5-dev x11proto-core-dev libx11-dev libz-dev \
-    libxml-simple-perl libc6-dev libgl1-mesa-dev tofrodos libxml2-utils \
-    xsltproc genisoimage gawk chrpath texinfo p7zip-full \
-    android-sdk-libsparse-utils ruby subversion libssl-dev \
-    protobuf-compiler pkg-config nano libtinfo5 ninja-build clang ccache \
-    libc++-dev rsync cmake automake libtool
+sudo apt install -y build-essential chrpath cpio debianutils diffstat expect file git iputils-ping libacl1 locales python3 python3-git python3-jinja2 python3-pexpect python3-subunit socat unzip wget xz-utils zstd gnupg flex bison gperf zip curl zlib1g-dev libncurses5-dev x11proto-core-dev libx11-dev libxml-simple-perl libc6-dev libgl1-mesa-dev tofrodos libxml2-utils xsltproc genisoimage gawk p7zip-full android-sdk-libsparse-utils ruby subversion libssl-dev protobuf-compiler pkg-config nano ninja-build clang ccache libc++-dev rsync cmake automake libtool
 ```
 
 3. Clone and build (***with -nd flag***):
@@ -88,6 +94,8 @@ cd wire-os
 ./build/build.sh -nd -bt dev -v <build-increment>
 # build-increment can be any number you want. it will be the final number of the OTA: 3.0.1.<incrememnt>.ota
 ```
+
+</details>
 
 ### Where is my OTA?
 
@@ -121,7 +129,7 @@ cd wire-os
 
 - I try to make it so whenever changes are made, you don't need to do a full rebuild; however, due to this being synced up to poky's `master` branch, behavior can be unpredictable. **Due to this, I recommend doing a full rebuild each time.** You can clean your build directory by running `sudo rm -rf poky/build/tmp-glibc poky/build/cache poky/build/sstate-cache poky/build/downloads`.
 
-##  Donate
+## Donate
 
 If you want to :P
 
@@ -143,16 +151,15 @@ If you want to :P
         -   He handles too-bright situations much better now
 -   Picovoice Porcupine (1.5) wakeword engine
     -   Custom wake words in :8080 webserver!
+-   YuNet + MobileFaceNet facial detection+recognition
+    -   Replacing the proprietary Okao libraries
 -   `htop` and `rsync` are embedded
 -   No more Python - update-engine was rewritten in C++
 -   General bug fixes - for instance, now he won't read the EMR partition upon every single screen draw (DDL bug)
 -   :8080 webserver for configuring things I don't want to integrate into a normal app
--   Cat and dog detection (basic, similar to Cozmo)
--   Smaller OTA size - a dev OTA is 153M somehow
 -   New Anki boot animation, new pre-boot-anim splash screen, rainbow backpack light animations
 -   TensorFlow Lite has been updated to v2.19.0 (a modern 2025 release)
-	-  This means we can maybe leverage the GPU delegate at some point
-	-  XNNPACK - the CPU delegate - is faster than what was there before
+	-  Gives us XNNPACK and an OpenCL delegate
 -   OpenCV has been updated to 4.12.0 (latest as of 11-2025)
   	-  Much better SDK streaming performance
 -   [Face overlays](https://www.reddit.com/r/AnkiVector/comments/1lteb3m/_/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
@@ -182,6 +189,7 @@ If you want to :P
 -	The camera programs and *some* of the BLE programs are being copied in rather than compiled.
 	-	Why not compile camera programs? Because I would have to add 2GB to the repo and figure out how to use the weird Qualcomm-specific toolchain.
 	-	Why not compile those BLE programs? `ankibluetoothd` and `hci_qcomm_init` are able to compile under GCC 15, but there is some weird low-level issue which makes them unable to properly communicate with a BLE library. So, for now, I am just copying pre-compiled ones in. I will probably try to fix this at some point.
+-   The kernel is still msm-3.18. Mainline might be possible. I was able to boot `msm8916-mainline` on a Vector and get some hardware peripherals working, but some fundamental ones (camera, Wi-Fi) will take quite a bit of work.
 
 ## How this upgrade was done
 

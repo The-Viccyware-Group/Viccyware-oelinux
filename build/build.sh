@@ -20,8 +20,8 @@ function usage() {
     exit 1
 }
 
-if [[ ! "$(uname -a)" == *"Linux"* ]] || [[ ! "$(uname -a)" == *"x86_64"* ]]; then
-	echo "This is not x86_64/amd64 Linux. Exiting."
+if [[ ! "$(uname -a)" == *"Linux"* ]] || [[ ! "$(uname -a)" == *"x86_64"* && ! "$(uname -a)" == *"aarch64"* ]]; then
+	echo "This is not x86_64/amd64 or aarch64/arm64 Linux. Exiting."
 	exit 1
 fi
 
@@ -55,6 +55,34 @@ function check_sign_ota() {
 		echo
 		echo -e "\033[1;31mOTA signing key is incorrect. exiting.\033[0m"
 		echo
+		exit 1
+	fi
+}
+
+function check_submodules() {
+	BAD_SUBMODULE=0
+	if [[ ! -d anki/victor/engine ]]; then
+		errorMsg "The anki/victor submodule doesn't exist."
+		BAD_SUBMODULE=1
+	fi
+	if [[ ! -d poky/openembedded-core/meta ]]; then
+		errorMsg "The poky/openembedded-core submodule doesn't exist."
+		BAD_SUBMODULE=1
+	fi
+	if [[ ! -d poky/meta-openembedded/meta-oe ]]; then
+		errorMsg "The poky/meta-openembedded submodule doesn't exist."
+		BAD_SUBMODULE=1
+	fi
+	if [[ ! -d external/purplpkg/bash ]]; then
+		errorMsg "The external/purplpkg submodule doesn't exist."
+		BAD_SUBMODULE=1
+	fi
+	if [[ ! -d anki/wired/webroot ]]; then
+		errorMsg "The anki/wired submodule doesn't exist."
+		BAD_SUBMODULE=1
+	fi
+	if [[ ${BAD_SUBMODULE} == 1 ]]; then
+		errorMsg "Please configure your submodules properly."
 		exit 1
 	fi
 }
@@ -130,6 +158,8 @@ if [[ "${AUTO_UPDATE}" == "1" ]]; then
 	AUTO_UPDATE=1
 fi
 
+check_submodules
+
 is_victor_there_and_compatible
 
 if [[ "$BOT_TYPE" != "oskr" && "$BOT_TYPE" != "dev" && "$BOT_TYPE" != "prod" && "$BOT_TYPE" != "devcloudless" ]]; then
@@ -156,6 +186,11 @@ if [[ ! $BUILD_INCREMENT =~ ^-?[0000-9999]+$ ]]; then
     usage "Build increment is not an int between 0-9999."
 fi
 
+if [[ "${NO_DOCKER}" != "1" && "$(uname -a)" == *"aarch64" ]]; then
+    errorMsg "Docker building does not work on aarch64. Follow the steps for building on bare metal."
+    exit 1
+fi
+
 echo "All checks passed. Building."
 
 mkdir -p build/cache
@@ -175,7 +210,7 @@ function cleanMsg() {
 
 function buildMsg() {
 	echo
-        echo -e "\e[1;32mBuilding the OS...\e[0m"
+    echo -e "\e[1;32mBuilding the OS...\e[0m"
 	echo
 }
 
@@ -188,14 +223,14 @@ export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
 ANKIDEV=1
 
 if [[ $BOT_TYPE == "oskr" ]]; then
-        export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
+    export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
 	BOOT_MAKE_COMMAND="make oskrsign"
 elif [[ $BOT_TYPE == "prod" ]]; then
-        export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
+    export BOOT_IMAGE_SIGNING_PASSWORD="${BOOT_PASSWORD}"
 	BOOT_MAKE_COMMAND="make prodsign"
 	ANKIDEV=0
 elif [[ $BOT_TYPE == "devcloudless" ]]; then
-        BOOT_MAKE_COMMAND="make devsign"
+    BOOT_MAKE_COMMAND="make devsign"
 else
 	BOOT_MAKE_COMMAND="make devsign"
 fi
@@ -205,24 +240,12 @@ if [[ $DO_SIGN == 1 ]]; then
     export DO_SIGN=$DO_SIGN
 fi
 
-# if [[ ! -z $(docker images -q ${OLD_CONTAINER_NAME}) ]]; then
-# 	echo "Purging old docker containers... this might take a while"
-# 	docker ps -a --filter "ancestor=${OLD_CONTAINER_NAME}" -q | xargs -r docker rm -f
-# 	docker rmi -f $(docker images --filter "reference=${OLD_CONTAINER_NAME}*" --format '{{.ID}}')
-# 	#echo
-# 	#echo -e "\033[5m\033[1m\033[31mOld Docker builder detected on system. If you have built victor or wire-os many times, it is recommended you run:\033[0m"
-# 	#echo
-# 	#echo -e "\033[1m\033[36mdocker system prune -a --volumes\033[0m"
-# 	#echo
-# 	#echo -e "\033[32mPrevious versions of wire-os did not include a --rm flag in the docker run command. This means you probably have wasted space which can be cleared out with the above command.\033[0m"
-# 	#echo -e "\033[32mContinuing in 10 seconds...\033[0m"
-# 	#sleep 10
-# fi
-
-if [[ -z $(docker images -q ${CURRENT_CONTAINER_NAME}) ]]; then
-	docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t ${CURRENT_CONTAINER_NAME} build/
-else
-	echo "Reusing ${CURRENT_CONTAINER_NAME}"
+if [[ "${NO_DOCKER}" != "1" ]]; then
+    if [[ -z $(docker images -q ${CURRENT_CONTAINER_NAME}) ]]; then
+        docker build --build-arg DIR_PATH="${DIRPATH}" --build-arg USER_NAME=$USER --build-arg UID=$(id -u $USER) --build-arg GID=$(id -u $USER) -t ${CURRENT_CONTAINER_NAME} build/
+    else
+        echo "Reusing ${CURRENT_CONTAINER_NAME}"
+    fi
 fi
 
 function run_with_docker() {
@@ -255,22 +278,6 @@ if [[ ${NO_DOCKER} == "1" ]]; then
 else
     run_with_docker "${FINAL_BUILD_INVOCATION}"
 fi
-
-    # bash -c \
-    # "cd $(pwd)/poky && \
-    # source build/conf/set_bb_env.sh && \
-    # export ANKI_BUILD_VERSION=$BUILD_INCREMENT && \
-    # export AUTO_UPDATE=${AUTO_UPDATE} && \
-    # ${YOCTO_CLEAN_COMMAND} && \
-    # sleep 2 && \
-    # ${YOCTO_BUILD_COMMAND} && \
-    # cd ${DIRPATH}/ota && \
-    # rm -rf ../_build/*.img ../_build/*.stats ../_build/*.ini ../_build/*.enc && \
-    # export DO_SIGN=${DO_SIGN} && \
-    # export OTA_MANIFEST_SIGNING_KEY=${OTA_SIGNING_KEY_PASSWORD} && \
-    # export BOOT_IMAGE_SIGNING_PASSWORD=${BOOT_PASSWORD} && \
-    # ${BOOT_MAKE_COMMAND} && \
-    # ANKIDEV=${ANKIDEV} make"
 
 echo
 echo -e "\033[1;32mCompleted successfully. Output is in ./_build.\033[0m"
